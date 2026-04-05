@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>TEST FIREBASE</title>
+</head>
+<body>
+
+    <h1>TEST</h1>
+
+    <textarea id="campo" style="width:90%; height:150px;"></textarea>
+    <br><br>
+    <button onclick="salva()">SALVA</button>
+
+    <!-- Firebase SDK (compat version, NECESSARIA per Realtime Database) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <script>
+        // CONFIGURAZIONE FIREBASE (LA TUA)
+        const firebaseConfig = {
+            apiKey: "AIzaSyB1_lem0tKd5SQeuD7xs8Dj3Ey77MUUhDY",
+            authDomain: "programmazione-4d38e.firebaseapp.com",
+            projectId: "programmazione-4d38e",
+            storageBucket: "programmazione-4d38e.firebasestorage.app",
+            messagingSenderId: "390860890072",
+            appId: "1:390860890072:web:5199a3f3c80f5b95a5dcad",
+            measurementId: "G-HGHJEJ6RWT",
+            databaseURL: "https://programmazione-4d38e-default-rtdb.europe-west1.firebasedatabase.app"
+        };
+
+        // Inizializza Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // 🔄 CARICA IL VALORE SALVATO
+        db.ref("test/campo").on("value", snapshot => {
+            const valore = snapshot.val();
+            if (valore !== null) {
+                document.getElementById("campo").value = valore;
+            }
+        });
+
+        // 💾 SALVA IL VALORE
+        function salva() {
+            const testo = document.getElementById("campo").value;
+            db.ref("test").set({
+                campo: testo
+            });
+            alert("Salvato!");
+        }
+    </script>
+
+</body>
+</html>
