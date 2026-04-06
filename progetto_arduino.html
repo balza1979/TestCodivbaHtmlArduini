@@ -284,7 +284,26 @@ window.aggiungiBlocco = async function(tipo) {
     if (tipo === "loop") document.getElementById("editorLoop").value += "\n" + codice;
     if (tipo === "func") document.getElementById("editorFunc").value += "\n\n" + codice;
 };
+/* -------------------------------
+   NUOVO PROGETTO
+--------------------------------*/
+window.nuovoProgetto = function() {
 
+    // Svuota tutti i campi
+    document.getElementById("editorDich").value = "";
+    document.getElementById("editorSetup").value = "";
+    document.getElementById("editorLoop").value = "";
+    document.getElementById("editorFunc").value = "";
+    document.getElementById("nomeFile").value = "";
+
+    // Svuota PIN usati
+    pinUsati = [];
+
+    // Rimuove ID progetto
+    localStorage.removeItem("progettoArduinoID");
+
+    alert("Nuovo progetto creato! Ora puoi salvarlo con un nuovo nome.");
+};
 /* -------------------------------
    SALVA PROGETTO
 --------------------------------*/
