@@ -293,6 +293,7 @@ window.salvaProgetto = function() {
     const setup = document.getElementById("editorSetup").value;
     const loop = document.getElementById("editorLoop").value;
     const func = document.getElementById("editorFunc").value;
+    const nomeFile = document.getElementById("nomeFile").value.trim();
 
     const id = localStorage.getItem("progettoArduinoID") || Date.now();
 
@@ -300,14 +301,14 @@ window.salvaProgetto = function() {
         dichiarazioni: dich,
         setup,
         loop,
-        funzioni: func
+        funzioni: func,
+        nomeFile: nomeFile || ""   // <--- SALVATO
     });
 
     localStorage.setItem("progettoArduinoID", id);
 
     alert("Progetto Arduino salvato!");
 };
-
 /* -------------------------------
    GENERA E SCARICA FILE .INO
 --------------------------------*/
