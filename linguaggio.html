@@ -10,12 +10,13 @@
         margin: 0;
         padding: 40px;
         text-align: center;
-        color: white;
+        color: black; /* Testo nero */
     }
 
     h1 {
         font-size: 90px;
         margin-bottom: 40px;
+        color: black; /* Titolo nero */
     }
 
     .btn {
@@ -24,10 +25,11 @@
         margin: 25px auto;
         font-size: 60px;
         border-radius: 30px;
-        border: none;
+        border: 5px solid black; /* Bordo per contrasto */
+        background: white; /* Pulsanti bianchi */
+        color: black; /* Testo nero */
         font-weight: bold;
         display: block;
-        color: white;
     }
 </style>
 
@@ -35,7 +37,6 @@
 <body>
 
 <h1 id="titolo"></h1>
-
 <div id="menu"></div>
 
 <script>
@@ -50,7 +51,7 @@ const colori = {
     excel: "#1D6F42"
 };
 
-document.body.style.background = colori[lang] || "#333";
+document.body.style.background = colori[lang] || "#DDD";
 
 const titoli = {
     javascript: "JavaScript",
@@ -106,5 +107,4 @@ menu[lang].forEach(item => {
 </script>
 
 </body>
-</html></body>
 </html>
