@@ -25,11 +25,17 @@
         font-size: 70px;
         border-radius: 30px;
         border: none;
-        background: #007bff;
         color: white;
         font-weight: bold;
         display: block;
     }
+
+    .js { background: #F7DF1E; color: black; }
+    .html { background: #E44D26; }
+    .css { background: #264DE4; }
+    .vba { background: #6A1B9A; }
+    .arduino { background: #00979D; }
+    .excel { background: #1D6F42; }
 </style>
 
 </head>
@@ -37,16 +43,17 @@
 
 <h1>SCEGLI IL LINGUAGGIO</h1>
 
-<button class="btn" onclick="scegli('vb')">Visual Basic</button>
-<button class="btn" onclick="scegli('python')">Python</button>
-<button class="btn" onclick="scegli('js')">JavaScript</button>
-<button class="btn" onclick="scegli('cpp')">C++</button>
-<button class="btn" onclick="scegli('html')">HTML / CSS</button>
+<button class="btn js" onclick="scegli('javascript')">JavaScript</button>
+<button class="btn html" onclick="scegli('html')">HTML</button>
+<button class="btn css" onclick="scegli('css')">CSS</button>
+<button class="btn vba" onclick="scegli('vba')">VBA</button>
+<button class="btn arduino" onclick="scegli('arduino')">Arduino</button>
+<button class="btn excel" onclick="scegli('excel')">Excel</button>
 
 <script>
 function scegli(lang) {
     localStorage.setItem("linguaggio", lang);
-    window.location.href = "capitolo.html"; 
+    window.location.href = "linguaggio.html"; 
 }
 </script>
 
