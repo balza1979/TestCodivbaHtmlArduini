@@ -136,7 +136,7 @@ function aggiungiDettaglio() {
     div.innerHTML = `
         <div class="row">
             <label>TIPO</label>
-            <select>
+            <select class="tipoSelect">
                 <option value="variabile">Variabile</option>
                 <option value="costante">Costante</option>
                 <option value="proprieta">Proprietà</option>
@@ -148,17 +148,17 @@ function aggiungiDettaglio() {
 
         <div class="row">
             <label>PAROLA CHIAVE</label>
-            <input type="text" placeholder="es: xcolor">
+            <input class="parolaInput" type="text" placeholder="es: xcolor">
         </div>
 
         <div class="row">
             <label>DESCRIZIONE</label>
-            <input type="text" placeholder="es: colore rosso">
+            <input class="descrizioneInput" type="text" placeholder="es: colore rosso">
         </div>
 
         <div class="row">
             <label>MODALITÀ VALORE</label>
-            <select onchange="cambiaModalita(this, '${div.id}')">
+            <select class="modalitaSelect" onchange="cambiaModalita(this, '${div.id}')">
                 <option value="tendina">Valori predefiniti (tendina)</option>
                 <option value="libero">Valore libero (input)</option>
             </select>
@@ -166,27 +166,27 @@ function aggiungiDettaglio() {
 
         <div class="row valoreTendina">
             <label>VALORE / CODICE (per tendina)</label>
-            <input type="text" placeholder="es: 000314">
+            <input class="tendinaInput" type="text" placeholder="es: 000314">
         </div>
 
         <div class="row valoreLibero" style="display:none;">
             <label>VALORE LIBERO</label>
-            <input type="text" placeholder="es: 10">
+            <input class="liberoInput" type="text" placeholder="es: 10">
         </div>
 
         <div class="row">
             <label>APPUNTI 1</label>
-            <input type="text" placeholder="campo libero">
+            <input class="app1" type="text" placeholder="campo libero">
         </div>
 
         <div class="row">
             <label>APPUNTI 2</label>
-            <input type="text" placeholder="campo libero">
+            <input class="app2" type="text" placeholder="campo libero">
         </div>
 
         <div class="row">
             <label>APPUNTI 3</label>
-            <input type="text" placeholder="campo libero">
+            <input class="app3" type="text" placeholder="campo libero">
         </div>
 
         <button class="deleteBtn" onclick="rimuoviDettaglio('${div.id}')">ELIMINA</button>
@@ -241,24 +241,23 @@ function rimuoviDettaglio(id) {
         const codice = document.getElementById("codice").value;
 
         const dettagli = [];
-        document.querySelectorAll("#contenitoreDettagli .dettaglioBox").forEach(box => {
+        document.querySelectorAll(".dettaglioBox").forEach(box => {
 
-    const inputs = box.querySelectorAll("input");
+            const obj = {
+                tipo: box.querySelector(".tipoSelect")?.value || "",
+                parola: box.querySelector(".parolaInput")?.value || "",
+                descrizione: box.querySelector(".descrizioneInput")?.value || "",
+                modalita: box.querySelector(".modalitaSelect")?.value || "",
+                valoreTendina: box.querySelector(".tendinaInput")?.value || "",
+                valoreLibero: box.querySelector(".liberoInput")?.value || "",
+                appunti1: box.querySelector(".app1")?.value || "",
+                appunti2: box.querySelector(".app2")?.value || "",
+                appunti3: box.querySelector(".app3")?.value || ""
+            };
 
-    const obj = {
-        tipo: box.querySelector("select").value,
-        parola: inputs[0]?.value || "",
-        descrizione: inputs[1]?.value || "",
-        modalita: box.querySelector("select:nth-of-type(2)").value,
-        valoreTendina: box.querySelector(".valoreTendina input")?.value || "",
-        valoreLibero: box.querySelector(".valoreLibero input")?.value || "",
-        appunti1: inputs[2]?.value || "",
-        appunti2: inputs[3]?.value || "",
-        appunti3: inputs[4]?.value || ""
-    };
+            dettagli.push(obj);
+        });
 
-    dettagli.push(obj);
-});
         set(ref(db, "capitoli/" + Date.now()), {
             descrizione,
             codice,
@@ -268,5 +267,6 @@ function rimuoviDettaglio(id) {
         alert("Capitolo salvato!");
     };
 </script>
+
 </body>
 </html>
