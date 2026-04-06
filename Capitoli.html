@@ -257,7 +257,7 @@ function rimuoviDettaglio(id) {
     const db = getDatabase(app);
 
     let capitoloCorrente = null;
-
+    const lang = localStorage.getItem("linguaggio") || "default";
     /* 🔍 CERCA CAPITOLI */
     window.cercaCapitoli = function() {
         const testo = document.getElementById("campoRicerca").value.toLowerCase();
