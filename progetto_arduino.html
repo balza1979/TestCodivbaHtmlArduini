@@ -222,7 +222,30 @@ function scegliPin(placeholder, modello) {
 
         // Rimuovi PIN già usati
         disponibili = disponibili.filter(p => !pinUsati.includes(p));
+/* -------------------------------
+   RILEVA PIN MODIFICATI MANUALMENTE
+--------------------------------*/
+function aggiornaPinDaCodice() {
+    const testo = 
+        document.getElementById("editorDich").value + "\n" +
+        document.getElementById("editorSetup").value + "\n" +
+        document.getElementById("editorLoop").value + "\n" +
+        document.getElementById("editorFunc").value;
 
+    const regex = /=\s*([A]?\d+)\s*;/g;
+
+    pinUsati = [];
+    let match;
+
+    while ((match = regex.exec(testo)) !== null) {
+        pinUsati.push(match[1]);
+    }
+}
+
+// Attiva il controllo in tempo reale
+["editorDich","editorSetup","editorLoop","editorFunc"].forEach(id => {
+    document.getElementById(id).addEventListener("keyup", aggiornaPinDaCodice);
+});
         // Riempie la tendina
         select.innerHTML = "";
         disponibili.forEach(pin => {
