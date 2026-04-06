@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Capitolo Arduino</title>
+
+<style>
+    body {
+        font-family: Arial;
+        margin: 0;
+        padding: 40px;
+        background: #00979D; /* Azzurro Arduino */
+        color: black;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 80px;
+        margin-bottom: 20px;
+    }
+
+    .homeBtn {
+        width: 90%;
+        padding: 40px;
+        margin: 20px auto 50px auto;
+        font-size: 60px;
+        border-radius: 30px;
+        border: 5px solid black;
+        background: white;
+        color: black;
+        font-weight: bold;
+        display: block;
+    }
+
+    input, select, textarea, button {
+        width: 90%;
+        font-size: 50px;
+        padding: 30px;
+        margin: 20px auto;
+        border-radius: 20px;
+        border: 4px solid black;
+        display: block;
+    }
+
+    textarea {
+        height: 350px;
+        background: white;
+        color: black;
+    }
+
+    .saveBtn {
+        background: #28a745;
+        color: white;
+        font-weight: bold;
+    }
+
+    .deleteBtn {
+        background: #cc0000;
+        color: white;
+        font-weight: bold;
+    }
+
+    .loadBtn {
+        background: white;
+        color: black;
+        font-weight: bold;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>Capitolo Arduino</h1>
+
+<button class="homeBtn" onclick="window.location.href='linguaggio.html'">🏠 HOME</button>
+
+<!-- Ricerca -->
+<select id="selectCapitoli" class="loadBtn" onchange="caricaCapitolo()">
+    <option value="">-- Cerca blocco Arduino --</option>
+</select>
+
+<!-- Nome blocco -->
+<input id="nomeBlocco" placeholder="Nome del blocco (es: Pulsante A1 → LED 13)">
+
+<!-- Categoria -->
+<input id="categoria" placeholder="Categoria (es: Input, Output, Sensori...)">
+
+<!-- DICHIARAZIONI -->
+<textarea id="dichiarazioni" placeholder="// Variabili, costanti, librerie..."></textarea>
+
+<!-- SETUP -->
+<textarea id="setup" placeholder="// Codice dentro void setup()"></textarea>
+
+<!-- LOOP -->
+<textarea id="loop" placeholder="// Codice dentro void loop()"></textarea>
+
+<!-- FUNZIONI EXTRA -->
+<textarea id="funzioni" placeholder="// Funzioni personalizzate"></textarea>
+
+<!-- Pulsanti -->
+<button class="saveBtn" onclick="salvaCapitolo()">💾 Salva Blocco</button>
+<button class="deleteBtn" onclick="eliminaCapitolo()">🗑️ Elimina Blocco</button>
+
+<!-- Firebase -->
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, set, get, child, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyB1_lem0tKd5SQeuD7xs8Dj3Ey77MUUhDY",
+    authDomain: "programmazione-4d38e.firebaseapp.com",
+    databaseURL: "https://programmazione-4d38e-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "programmazione-4d38e",
+    storageBucket: "programmazione-4d38e.appspot.com",
+    messagingSenderId: "390860890072",
+    appId: "1:390860890072:web:5199a3f3c80f5b95a5dcad"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let capitoloCorrente = null;
+
+// Carica lista capitoli
+function caricaLista() {
+    get(child(ref(db), "capitoli/arduino")).then(snap => {
+        const sel = document.getElementById("selectCapitoli");
+        sel.innerHTML = "<option value=''>-- Cerca blocco Arduino --</option>";
+
+        if (!snap.exists()) return;
+
+        Object.entries(snap.val()).forEach(([id, cap]) => {
+            const opt = document.createElement("option");
+            opt.value = id;
+            opt.textContent = cap.nome;
+            sel.appendChild(opt);
+        });
+    });
+}
+
+caricaLista();
+
+// Carica capitolo selezionato
+window.caricaCapitolo = function() {
+    const id = document.getElementById("selectCapitoli").value;
+    if (!id) return;
+
+    capitoloCorrente = id;
+
+    get(child(ref(db), "capitoli/arduino/" + id)).then(snap => {
+        if (!snap.exists()) return;
+
+        const cap = snap.val();
+
+        document.getElementById("nomeBlocco").value = cap.nome || "";
+        document.getElementById("categoria").value = cap.categoria || "";
+        document.getElementById("dichiarazioni").value = cap.dichiarazioni || "";
+        document.getElementById("setup").value = cap.setup || "";
+        document.getElementById("loop").value = cap.loop || "";
+        document.getElementById("funzioni").value = cap.funzioni || "";
+    });
+};
+
+// Salva capitolo
+window.salvaCapitolo = function() {
+    const nome = document.getElementById("nomeBlocco").value;
+    const categoria = document.getElementById("categoria").value;
+    const dichiarazioni = document.getElementById("dichiarazioni").value;
+    const setup = document.getElementById("setup").value;
+    const loop = document.getElementById("loop").value;
+    const funzioni = document.getElementById("funzioni").value;
+
+    const id = capitoloCorrente || Date.now();
+
+    set(ref(db, "capitoli/arduino/" + id), {
+        nome,
+        categoria,
+        dichiarazioni,
+        setup,
+        loop,
+        funzioni
+    });
+
+    capitoloCorrente = id;
+
+    alert("Blocco Arduino salvato!");
+    caricaLista();
+};
+
+// Elimina capitolo
+window.eliminaCapitolo = function() {
+    if (!capitoloCorrente) {
+        alert("Nessun blocco selezionato");
+        return;
+    }
+
+    if (!confirm("Eliminare questo blocco Arduino?")) return;
+
+    remove(ref(db, "capitoli/arduino/" + capitoloCorrente));
+
+    capitoloCorrente = null;
+    document.getElementById("nomeBlocco").value = "";
+    document.getElementById("categoria").value = "";
+    document.getElementById("dichiarazioni").value = "";
+    document.getElementById("setup").value = "";
+    document.getElementById("loop").value = "";
+    document.getElementById("funzioni").value = "";
+
+    alert("Blocco eliminato!");
+    caricaLista();
+};
+
+</script>
+
+</body>
+</html>
