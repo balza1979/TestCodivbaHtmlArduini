@@ -31,13 +31,13 @@ button {
     border: 3px solid #000;
 }
 
-input {
+input, select {
     width: 100%;
     font-size: 40px;
     padding: 20px;
     border-radius: 20px;
     border: 3px solid #000;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 </style>
 </head>
@@ -46,21 +46,42 @@ input {
 
 <h1 style="font-size:60px;">Progetto Arduino</h1>
 
+<!-- MODELLO ARDUINO -->
+<label style="font-size:45px;">Modello Arduino:</label>
+<select id="selectModello">
+    <option value="">-- Seleziona --</option>
+    <option value="UNO">Arduino UNO</option>
+</select>
+
+<!-- NOME FILE -->
 <label style="font-size:45px;">Nome file (.ino):</label>
 <input id="nomeFile" placeholder="nome_file">
 
+<!-- DICHIARAZIONI -->
 <h2 style="font-size:50px;">Dichiarazioni</h2>
+<select id="selectDich"></select>
+<button onclick="aggiungiBlocco('dich')" style="background:#ddd;">➕ Aggiungi blocco</button>
 <textarea id="editorDich"></textarea>
 
+<!-- SETUP -->
 <h2 style="font-size:50px;">Setup</h2>
+<select id="selectSetup"></select>
+<button onclick="aggiungiBlocco('setup')" style="background:#ddd;">➕ Aggiungi blocco</button>
 <textarea id="editorSetup"></textarea>
 
+<!-- LOOP -->
 <h2 style="font-size:50px;">Loop</h2>
+<select id="selectLoop"></select>
+<button onclick="aggiungiBlocco('loop')" style="background:#ddd;">➕ Aggiungi blocco</button>
 <textarea id="editorLoop"></textarea>
 
+<!-- FUNZIONI -->
 <h2 style="font-size:50px;">Funzioni</h2>
+<select id="selectFunc"></select>
+<button onclick="aggiungiBlocco('func')" style="background:#ddd;">➕ Aggiungi blocco</button>
 <textarea id="editorFunc"></textarea>
 
+<!-- PULSANTI -->
 <button onclick="nuovoProgetto()" style="background:#ffcc00;">🆕 Nuovo progetto</button>
 <button onclick="salvaProgetto()" style="background:#4CAF50; color:white;">💾 Salva progetto</button>
 <button onclick="generaFile()" style="background:#2196F3; color:white;">⬇️ Genera file .ino</button>
@@ -97,6 +118,19 @@ input {
 </div>
 
 <script type="module">
+
+// -------------------------------
+// FIREBASE IMPORT
+// -------------------------------
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+    databaseURL: "https://iza1979-default-rtdb.europe-west1.firebasedatabase.app/"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
 // -------------------------------
 // CONFIGURAZIONE PIN ARDUINO
@@ -202,6 +236,70 @@ async function processaBlocchi(codice, modello) {
 
     return codice;
 }
+
+// -------------------------------
+// CARICA LISTA BLOCCHI
+// -------------------------------
+function caricaCapitoli() {
+    const dbRef = ref(db);
+
+    get(child(dbRef, "blocchi")).then(snap => {
+        if (!snap.exists()) return;
+
+        const blocchi = snap.val();
+
+        riempiSelect("selectDich", blocchi.dichiarazioni);
+        riempiSelect("selectSetup", blocchi.setup);
+        riempiSelect("selectLoop", blocchi.loop);
+        riempiSelect("selectFunc", blocchi.funzioni);
+    });
+}
+
+function riempiSelect(id, lista) {
+    const sel = document.getElementById(id);
+    sel.innerHTML = "<option value=''>-- Seleziona --</option>";
+
+    for (let key in lista) {
+        sel.innerHTML += `<option value='${JSON.stringify(lista[key])}'>${lista[key].titolo}</option>`;
+    }
+}
+
+caricaCapitoli();
+
+// -------------------------------
+// AGGIUNGI BLOCCO
+// -------------------------------
+window.aggiungiBlocco = async function(tipo) {
+
+    const modello = document.getElementById("selectModello").value;
+    if (!modello) {
+        alert("Seleziona prima un modello Arduino");
+        return;
+    }
+
+    let cap = null;
+
+    if (tipo === "dich") cap = JSON.parse(selectDich.value || "null");
+    if (tipo === "setup") cap = JSON.parse(selectSetup.value || "null");
+    if (tipo === "loop") cap = JSON.parse(selectLoop.value || "null");
+    if (tipo === "func") cap = JSON.parse(selectFunc.value || "null");
+
+    if (!cap) return;
+
+    let codice = "";
+
+    if (tipo === "dich") codice = cap.dichiarazioni;
+    if (tipo === "setup") codice = cap.setup;
+    if (tipo === "loop") codice = cap.loop;
+    if (tipo === "func") codice = cap.funzioni;
+
+    codice = await processaBlocchi(codice, modello);
+
+    if (tipo === "dich") editorDich.value += "\n" + codice;
+    if (tipo === "setup") editorSetup.value += "\n" + codice;
+    if (tipo === "loop") editorLoop.value += "\n" + codice;
+    if (tipo === "func") editorFunc.value += "\n\n" + codice;
+};
 
 // -------------------------------
 // NUOVO PROGETTO
