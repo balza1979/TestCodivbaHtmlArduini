@@ -322,6 +322,130 @@ window.aggiungiBlocco = async function(tipo) {
     if (tipo === "dich") codice = cap.dichiarazioni;
     if (tipo === "setup") codice = cap.setup;
     if (tipo === "loop") codice = cap.loop;
+<script type="module">
+
+// -------------------------------
+// VARIABILI GLOBALI
+// -------------------------------
+let pinUsati = [];
+
+// -------------------------------
+// SELEZIONE PIN CON POPUP
+// -------------------------------
+function scegliPin(placeholder, modello) {
+    return new Promise(resolve => {
+
+        const popup = document.getElementById("popupPin");
+        const select = document.getElementById("popupSelectPin");
+        const title = document.getElementById("popupTitle");
+
+        title.textContent = "Seleziona PIN per " + placeholder;
+
+        let disponibili = [];
+
+        if (placeholder === "PIN_INPUT") {
+            disponibili = [...pinMap[modello].analog, ...pinMap[modello].digital];
+        }
+        if (placeholder === "PIN_OUTPUT") {
+            disponibili = [...pinMap[modello].digital];
+        }
+        if (placeholder === "PIN_PWM") {
+            disponibili = [...pinMap[modello].pwm];
+        }
+
+        disponibili = disponibili.filter(p => !pinUsati.includes(p));
+
+        select.innerHTML = "";
+        disponibili.forEach(pin => {
+            const opt = document.createElement("option");
+            opt.value = pin;
+            opt.textContent = pin;
+            select.appendChild(opt);
+        });
+
+        popup.style.display = "flex";
+
+        document.getElementById("popupOk").onclick = () => {
+            const scelto = select.value;
+            pinUsati.push(scelto);
+            popup.style.display = "none";
+            resolve(scelto);
+        };
+
+        document.getElementById("popupCancel").onclick = () => {
+            popup.style.display = "none";
+            resolve(null);
+        };
+    });
+}
+
+// -------------------------------
+// RILEVA PIN MODIFICATI MANUALMENTE
+// -------------------------------
+function aggiornaPinDaCodice() {
+    const testo =
+        document.getElementById("editorDich").value + "\n" +
+        document.getElementById("editorSetup").value + "\n" +
+        document.getElementById("editorLoop").value + "\n" +
+        document.getElementById("editorFunc").value;
+
+    const regex = /=\s*([A]?\d+)\s*;/g;
+
+    pinUsati = [];
+    let match;
+
+    while ((match = regex.exec(testo)) !== null) {
+        pinUsati.push(match[1]);
+    }
+}
+
+["editorDich","editorSetup","editorLoop","editorFunc"].forEach(id => {
+    document.getElementById(id).addEventListener("keyup", aggiornaPinDaCodice);
+});
+
+// -------------------------------
+// SOSTITUZIONE PLACEHOLDER
+// -------------------------------
+async function processaBlocchi(codice, modello) {
+
+    const placeholders = ["PIN_INPUT", "PIN_OUTPUT", "PIN_PWM"];
+
+    for (let ph of placeholders) {
+        while (codice.includes(ph)) {
+            const pin = await scegliPin(ph, modello);
+            if (!pin) return codice;
+            codice = codice.replace(ph, pin);
+        }
+    }
+
+    return codice;
+}
+
+// -------------------------------
+// AGGIUNGI BLOCCO
+// -------------------------------
+window.aggiungiBlocco = async function(tipo) {
+
+    const modello = document.getElementById("selectModello").value;
+    if (!modello) {
+        alert("Seleziona prima un modello Arduino");
+        return;
+    }
+
+    let cap = null;
+
+    if (tipo === "dich") cap = JSON.parse(document.getElementById("selectDich").value || "null");
+    if (tipo === "setup") cap = JSON.parse(document.getElementById("selectSetup").value || "null");
+    if (tipo === "loop") cap = JSON.parse(document.getElementById("selectLoop").value || "null");
+    if (tipo === "func") cap = JSON.parse(document.getElementById("selectFunc").value || "null");
+
+    if (!cap) return;
+
+    let codice = "";
+
+    if (tipo === "dich") codice = cap.dichiarazioni;
+    if (tipo === "setup") codice = cap.setup;
+    if (tipo === "loop") codice = cap.loop;
     if (tipo === "func") codice = cap.funzioni;
 
     codice = await processaBlocchi(codice, modello);
@@ -331,29 +455,28 @@ window.aggiungiBlocco = async function(tipo) {
     if (tipo === "loop") document.getElementById("editorLoop").value += "\n" + codice;
     if (tipo === "func") document.getElementById("editorFunc").value += "\n\n" + codice;
 };
-/* -------------------------------
-   NUOVO PROGETTO
---------------------------------*/
+
+// -------------------------------
+// NUOVO PROGETTO
+// -------------------------------
 window.nuovoProgetto = function() {
 
-    // Svuota tutti i campi
     document.getElementById("editorDich").value = "";
     document.getElementById("editorSetup").value = "";
     document.getElementById("editorLoop").value = "";
     document.getElementById("editorFunc").value = "";
     document.getElementById("nomeFile").value = "";
 
-    // Svuota PIN usati
     pinUsati = [];
 
-    // Rimuove ID progetto
     localStorage.removeItem("progettoArduinoID");
 
     alert("Nuovo progetto creato! Ora puoi salvarlo con un nuovo nome.");
 };
-/* -------------------------------
-   SALVA PROGETTO
---------------------------------*/
+
+// -------------------------------
+// SALVA PROGETTO
+// -------------------------------
 window.salvaProgetto = function() {
     const dich = document.getElementById("editorDich").value;
     const setup = document.getElementById("editorSetup").value;
@@ -368,16 +491,17 @@ window.salvaProgetto = function() {
         setup,
         loop,
         funzioni: func,
-        nomeFile: nomeFile || ""   // <--- SALVATO
+        nomeFile: nomeFile || ""
     });
 
     localStorage.setItem("progettoArduinoID", id);
 
     alert("Progetto Arduino salvato!");
 };
-/* -------------------------------
-   GENERA E SCARICA FILE .INO
---------------------------------*/
+
+// -------------------------------
+// GENERA FILE .INO
+// -------------------------------
 window.generaFile = function() {
     const dich = document.getElementById("editorDich").value;
     const setup = document.getElementById("editorSetup").value;
@@ -399,33 +523,29 @@ ${loop}
 ${func}
 `;
 
-    // Nome file personalizzato
     let nome = document.getElementById("nomeFile").value.trim();
     if (nome === "") nome = "progetto_arduino";
     const nomeFile = nome + ".ino";
 
-    // Crea il file
     const blob = new Blob([finale], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
 
-    // Crea link invisibile
     const a = document.createElement("a");
     a.href = url;
     a.download = nomeFile;
     document.body.appendChild(a);
 
-    // Avvia download
     a.click();
 
-    // Pulisce
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
     alert("File .ino scaricato come: " + nomeFile);
 };
-/* -------------------------------
-   CARICAMENTO AUTOMATICO PROGETTO
---------------------------------*/
+
+// -------------------------------
+// CARICA PROGETTO
+// -------------------------------
 function caricaProgettoAutomatico() {
     const id = localStorage.getItem("progettoArduinoID");
     if (!id) return;
@@ -441,15 +561,16 @@ function caricaProgettoAutomatico() {
         document.getElementById("editorSetup").value = dati.setup || "";
         document.getElementById("editorLoop").value = dati.loop || "";
         document.getElementById("editorFunc").value = dati.funzioni || "";
-
-        // 🔥 CARICA IL NOME FILE
         document.getElementById("nomeFile").value = dati.nomeFile || "";
     });
 }
+
 caricaProgettoAutomatico();
 
 </script>
 
 
+
+    
 </body>
 </html>
