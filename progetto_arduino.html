@@ -250,6 +250,30 @@ function scegliPin(placeholder, modello) {
         };
     });
 }(p));
+    /* -------------------------------
+   RILEVA PIN MODIFICATI MANUALMENTE
+--------------------------------*/
+function aggiornaPinDaCodice() {
+    const testo = 
+        document.getElementById("editorDich").value + "\n" +
+        document.getElementById("editorSetup").value + "\n" +
+        document.getElementById("editorLoop").value + "\n" +
+        document.getElementById("editorFunc").value;
+
+    const regex = /=\s*([A]?\d+)\s*;/g;
+
+    pinUsati = [];
+    let match;
+
+    while ((match = regex.exec(testo)) !== null) {
+        pinUsati.push(match[1]);
+    }
+}
+
+// Attiva il controllo in tempo reale
+["editorDich","editorSetup","editorLoop","editorFunc"].forEach(id => {
+    document.getElementById(id).addEventListener("keyup", aggiornaPinDaCodice);
+});
 /* -------------------------------
    RILEVA PIN MODIFICATI MANUALMENTE
 --------------------------------*/
@@ -472,35 +496,7 @@ function caricaProgettoAutomatico() {
 caricaProgettoAutomatico();
 
 </script>
-<!-- POPUP SELEZIONE PIN -->
-<div id="popupPin" 
-     style="position:fixed; top:0; left:0; width:100%; height:100%;
-            background:rgba(0,0,0,0.6); display:none; justify-content:center; align-items:center;">
 
-    <div style="background:white; padding:40px; border-radius:30px; width:80%; text-align:center;">
 
-        <div id="popupTitle" style="font-size:60px; margin-bottom:30px; font-weight:bold;">
-            Seleziona PIN
-        </div>
-
-        <select id="popupSelectPin" 
-                style="width:90%; font-size:50px; padding:30px; margin-bottom:40px;
-                       border-radius:20px; border:4px solid black;">
-        </select>
-
-        <button id="popupOk" 
-                style="width:90%; padding:30px; font-size:50px; margin-bottom:20px;
-                       background:#28a745; color:white; border-radius:20px; border:4px solid black;">
-            OK
-        </button>
-
-        <button id="popupCancel" 
-                style="width:90%; padding:30px; font-size:50px;
-                       background:#cc0000; color:white; border-radius:20px; border:4px solid black;">
-            Annulla
-        </button>
-
-    </div>
-</div>
 </body>
 </html>
