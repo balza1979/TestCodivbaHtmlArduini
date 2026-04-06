@@ -54,7 +54,26 @@
     textarea {
         height: 300px; /* più grande */
     }
+.header {
+    width: 100%;
+    background: #333;
+    padding: 20px 0;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    text-align: center;
+}
 
+.homeBtn {
+    width: 90%;
+    padding: 40px;
+    font-size: 70px;
+    border-radius: 25px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    font-weight: bold;
+}
     button {
         width: 100%;
         padding: 35px;
@@ -76,7 +95,9 @@
 
 </head>
 <body>
-
+<div class="header">
+    <button class="homeBtn" onclick="window.location.href='index.html'">HOME</button>
+</div>
 <h1 id="titoloCapitolo">CAPITOLO</h1>
 
 <!-- DESCRIZIONE -->
