@@ -376,8 +376,8 @@ function rimuoviDettaglio(id) {
     if (!confirm("Sei sicuro di voler eliminare questo capitolo?")) {
         return;
     }
-
-    remove(ref(db, "capitoli/" + capitoloCorrente))
+remove(ref(db, "capitoli/" + lang + "/" + capitoloCorrente))
+    
         .then(() => {
             alert("Capitolo eliminato!");
 
