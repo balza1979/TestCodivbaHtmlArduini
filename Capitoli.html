@@ -299,7 +299,7 @@ function rimuoviDettaglio(id) {
 
         capitoloCorrente = id;
 
-        get(child(ref(db), "capitoli/" + id)).then(snapshot => {
+        get(child(ref(db), "capitoli/" + lang + "/" + id)).then(snapshot => {
             if (!snapshot.exists()) return;
 
             const cap = snapshot.val();
@@ -356,8 +356,8 @@ function rimuoviDettaglio(id) {
         });
 
         const id = capitoloCorrente || Date.now();
-
-        set(ref(db, "capitoli/" + id), {
+          set(ref(db, "capitoli/" + lang + "/" + id), {
+        
             descrizione,
             codice,
             dettagli
