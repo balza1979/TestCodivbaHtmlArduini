@@ -1,55 +1,130 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>TEST FIREBASE</title>
+<meta charset="UTF-8">
+<title>CAPITOLO</title>
+
+<style>
+    body {
+        font-family: Arial;
+        margin: 20px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .box {
+        border: 1px solid #ccc;
+        padding: 15px;
+        margin-top: 15px;
+        border-radius: 8px;
+        background: #f9f9f9;
+    }
+
+    .row {
+        margin-bottom: 10px;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    input, textarea, select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: 1px solid #aaa;
+    }
+
+    button {
+        padding: 10px 20px;
+        margin-top: 15px;
+        border: none;
+        background: #007bff;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .deleteBtn {
+        background: red;
+        margin-top: 10px;
+    }
+</style>
+
 </head>
 <body>
 
-    <h1>TEST</h1>
+<h1 id="titoloCapitolo">CAPITOLO</h1>
 
-    <textarea id="campo" style="width:90%; height:150px;"></textarea>
-    <br><br>
-    <button onclick="salva()">SALVA</button>
+<!-- DESCRIZIONE -->
+<div class="box">
+    <label>DESCRIZIONE GENERALE</label>
+    <textarea id="descrizione" rows="4"></textarea>
+</div>
 
-    <!-- Firebase SDK (compat version, NECESSARIA per Realtime Database) -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+<!-- CODICE -->
+<div class="box">
+    <label>CODICE</label>
+    <textarea id="codice" rows="4"></textarea>
+</div>
 
-    <script>
-        // CONFIGURAZIONE FIREBASE (LA TUA)
-        const firebaseConfig = {
-            apiKey: "AIzaSyB1_lem0tKd5SQeuD7xs8Dj3Ey77MUUhDY",
-            authDomain: "programmazione-4d38e.firebaseapp.com",
-            projectId: "programmazione-4d38e",
-            storageBucket: "programmazione-4d38e.firebasestorage.app",
-            messagingSenderId: "390860890072",
-            appId: "1:390860890072:web:5199a3f3c80f5b95a5dcad",
-            measurementId: "G-HGHJEJ6RWT",
-            databaseURL: "https://programmazione-4d38e-default-rtdb.europe-west1.firebasedatabase.app"
-        };
+<!-- DETTAGLI -->
+<h2>DETTAGLI</h2>
+<div id="contenitoreDettagli"></div>
 
-        // Inizializza Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+<button onclick="aggiungiDettaglio()">AGGIUNGI DETTAGLIO</button>
 
-        // 🔄 CARICA IL VALORE SALVATO
-        db.ref("test/campo").on("value", snapshot => {
-            const valore = snapshot.val();
-            if (valore !== null) {
-                document.getElementById("campo").value = valore;
-            }
-        });
+<script>
+let contatore = 0;
 
-        // 💾 SALVA IL VALORE
-        function salva() {
-            const testo = document.getElementById("campo").value;
-            db.ref("test").set({
-                campo: testo
-            });
-            alert("Salvato!");
-        }
-    </script>
+function aggiungiDettaglio() {
+    contatore++;
+
+    const div = document.createElement("div");
+    div.className = "box";
+    div.id = "dettaglio_" + contatore;
+
+    div.innerHTML = `
+        <div class="row">
+            <label>TIPO</label>
+            <select>
+                <option value="variabile">Variabile</option>
+                <option value="costante">Costante</option>
+                <option value="proprieta">Proprietà</option>
+                <option value="oggetto">Oggetto</option>
+                <option value="funzione">Funzione</option>
+                <option value="altro">Altro</option>
+            </select>
+        </div>
+
+        <div class="row">
+            <label>PAROLA CHIAVE</label>
+            <input type="text" placeholder="es: xcolor">
+        </div>
+
+        <div class="row">
+            <label>DESCRIZIONE</label>
+            <input type="text" placeholder="es: colore rosso">
+        </div>
+
+        <div class="row">
+            <label>VALORE / CODICE</label>
+            <input type="text" placeholder="es: 000314">
+        </div>
+
+        <button class="deleteBtn" onclick="rimuoviDettaglio('${div.id}')">ELIMINA</button>
+    `;
+
+    document.getElementById("contenitoreDettagli").appendChild(div);
+}
+
+function rimuoviDettaglio(id) {
+    document.getElementById(id).remove();
+}
+</script>
 
 </body>
 </html>
