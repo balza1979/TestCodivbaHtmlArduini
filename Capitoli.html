@@ -265,8 +265,7 @@ function rimuoviDettaglio(id) {
 
         const risultati = document.getElementById("risultatiRicerca");
         risultati.innerHTML = "<option value=''>-- Seleziona --</option>";
-
-        get(child(ref(db), "capitoli")).then(snapshot => {
+    get(child(ref(db), "capitoli/" + lang)).then(snapshot => {
             if (!snapshot.exists()) return;
 
             const dati = snapshot.val();
