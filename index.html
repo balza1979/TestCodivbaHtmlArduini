@@ -241,7 +241,7 @@ function rimuoviDettaglio(id) {
         const codice = document.getElementById("codice").value;
 
         const dettagli = [];
-        document.querySelectorAll("#contenitoreDettagli .box").forEach(box => {
+        document.querySelectorAll("#contenitoreDettagli .dettaglioBox").forEach(box => {
             const obj = {
                 tipo: box.querySelector("select").value,
                 parola: box.querySelectorAll("input")[0].value,
