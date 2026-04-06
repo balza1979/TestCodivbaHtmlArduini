@@ -375,9 +375,11 @@ function caricaProgettoAutomatico() {
         document.getElementById("editorSetup").value = dati.setup || "";
         document.getElementById("editorLoop").value = dati.loop || "";
         document.getElementById("editorFunc").value = dati.funzioni || "";
+
+        // 🔥 CARICA IL NOME FILE
+        document.getElementById("nomeFile").value = dati.nomeFile || "";
     });
 }
-
 caricaProgettoAutomatico();
 
 </script>
