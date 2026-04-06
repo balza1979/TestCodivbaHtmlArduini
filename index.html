@@ -242,20 +242,23 @@ function rimuoviDettaglio(id) {
 
         const dettagli = [];
         document.querySelectorAll("#contenitoreDettagli .dettaglioBox").forEach(box => {
-            const obj = {
-                tipo: box.querySelector("select").value,
-                parola: box.querySelectorAll("input")[0].value,
-                descrizione: box.querySelectorAll("input")[1].value,
-                modalita: box.querySelector("select:nth-of-type(2)").value,
-                valoreTendina: box.querySelector(".valoreTendina input")?.value || "",
-                valoreLibero: box.querySelector(".valoreLibero input")?.value || "",
-                appunti1: box.querySelectorAll("input")[2].value,
-                appunti2: box.querySelectorAll("input")[3].value,
-                appunti3: box.querySelectorAll("input")[4].value
-            };
-            dettagli.push(obj);
-        });
 
+    const inputs = box.querySelectorAll("input");
+
+    const obj = {
+        tipo: box.querySelector("select").value,
+        parola: inputs[0]?.value || "",
+        descrizione: inputs[1]?.value || "",
+        modalita: box.querySelector("select:nth-of-type(2)").value,
+        valoreTendina: box.querySelector(".valoreTendina input")?.value || "",
+        valoreLibero: box.querySelector(".valoreLibero input")?.value || "",
+        appunti1: inputs[2]?.value || "",
+        appunti2: inputs[3]?.value || "",
+        appunti3: inputs[4]?.value || ""
+    };
+
+    dettagli.push(obj);
+});
         set(ref(db, "capitoli/" + Date.now()), {
             descrizione,
             codice,
