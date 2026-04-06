@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Progetto Arduino</title>
+
+<style>
+    body {
+        font-family: Arial;
+        margin: 0;
+        padding: 40px;
+        background: #00979D; /* Azzurro Arduino */
+        color: black;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 80px;
+        margin-bottom: 20px;
+    }
+
+    .homeBtn {
+        width: 90%;
+        padding: 40px;
+        margin: 20px auto 50px auto;
+        font-size: 60px;
+        border-radius: 30px;
+        border: 5px solid black;
+        background: white;
+        color: black;
+        font-weight: bold;
+        display: block;
+    }
+
+    .sectionTitle {
+        font-size: 60px;
+        margin-top: 40px;
+        margin-bottom: 20px;
+    }
+
+    select, textarea, button {
+        width: 90%;
+        font-size: 50px;
+        padding: 30px;
+        margin: 20px auto;
+        border-radius: 20px;
+        border: 4px solid black;
+        display: block;
+    }
+
+    textarea {
+        height: 350px;
+        background: white;
+        color: black;
+    }
+
+    .addBtn {
+        background: white;
+        color: black;
+        font-weight: bold;
+    }
+
+    .saveBtn {
+        background: #28a745;
+        color: white;
+        font-weight: bold;
+    }
+
+    .generateBtn {
+        background: #000;
+        color: white;
+        font-weight: bold;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>Progetto Arduino</h1>
+
+<button class="homeBtn" onclick="window.location.href='linguaggio.html'">🏠 HOME</button>
+
+<!-- DICHIARAZIONI -->
+<div class="sectionTitle">Dichiarazioni Globali</div>
+<select id="selectDich"></select>
+<button class="addBtn" onclick="aggiungiBlocco('dich')">➕ Aggiungi a Dichiarazioni</button>
+<textarea id="editorDich" placeholder="// Variabili, costanti, librerie..."></textarea>
+
+<!-- SETUP -->
+<div class="sectionTitle">Setup()</div>
+<select id="selectSetup"></select>
+<button class="addBtn" onclick="aggiungiBlocco('setup')">➕ Aggiungi a setup()</button>
+<textarea id="editorSetup" placeholder="// Codice di inizializzazione..."></textarea>
+
+<!-- LOOP -->
+<div class="sectionTitle">Loop()</div>
+<select id="selectLoop"></select>
+<button class="addBtn" onclick="aggiungiBlocco('loop')">➕ Aggiungi a loop()</button>
+<textarea id="editorLoop" placeholder="// Codice ripetuto continuamente..."></textarea>
+
+<!-- FUNZIONI EXTRA -->
+<div class="sectionTitle">Funzioni Extra</div>
+<select id="selectFunc"></select>
+<button class="addBtn" onclick="aggiungiBlocco('func')">➕ Aggiungi Funzione</button>
+<textarea id="editorFunc" placeholder="// Funzioni personalizzate..."></textarea>
+
+<!-- Pulsanti finali -->
+<button class="saveBtn" onclick="salvaProgetto()">💾 Salva Progetto</button>
+<button class="generateBtn" onclick="generaFile()">⚙️ Genera File .ino</button>
+
+<!-- Firebase -->
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyB1_lem0tKd5SQeuD7xs8Dj3Ey77MUUhDY",
+    authDomain: "programmazione-4d38e.firebaseapp.com",
+    databaseURL: "https://programmazione-4d38e-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "programmazione-4d38e",
+    storageBucket: "programmazione-4d38e.appspot.com",
+    messagingSenderId: "390860890072",
+    appId: "1:390860890072:web:5199a3f3c80f5b95a5dcad"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// Carica capitoli Arduino nelle tendine
+function caricaCapitoli() {
+    const dbRef = ref(db);
+
+    get(child(dbRef, "capitoli/arduino")).then(snap => {
+        const blocchi = snap.exists() ? snap.val() : {};
+
+        const sezioni = {
+            selectDich: "Dichiarazioni",
+            selectSetup: "Setup",
+            selectLoop: "Loop",
+            selectFunc: "Funzioni"
+        };
+
+        for (let idSelect in sezioni) {
+            const sel = document.getElementById(idSelect);
+            sel.innerHTML = `<option value=''>-- ${sezioni[idSelect]} --</option>`;
+        }
+
+        Object.entries(blocchi).forEach(([id, cap]) => {
+            const opt = document.createElement("option");
+            opt.value = cap.codice || "";
+            opt.textContent = cap.descrizione;
+
+            // Tutti i blocchi possono andare ovunque
+            document.getElementById("selectDich").appendChild(opt.cloneNode(true));
+            document.getElementById("selectSetup").appendChild(opt.cloneNode(true));
+            document.getElementById("selectLoop").appendChild(opt.cloneNode(true));
+            document.getElementById("selectFunc").appendChild(opt.cloneNode(true));
+        });
+    });
+}
+
+caricaCapitoli();
+
+// Aggiunge blocchi agli editor
+window.aggiungiBlocco = function(tipo) {
+    let val = "";
+    if (tipo === "dich") val = document.getElementById("selectDich").value;
+    if (tipo === "setup") val = document.getElementById("selectSetup").value;
+    if (tipo === "loop") val = document.getElementById("selectLoop").value;
+    if (tipo === "func") val = document.getElementById("selectFunc").value;
+
+    if (!val) return;
+
+    if (tipo === "dich") document.getElementById("editorDich").value += "\n" + val;
+    if (tipo === "setup") document.getElementById("editorSetup").value += "\n" + val;
+    if (tipo === "loop") document.getElementById("editorLoop").value += "\n" + val;
+    if (tipo === "func") document.getElementById("editorFunc").value += "\n\n" + val;
+};
+
+// Salva progetto
+window.salvaProgetto = function() {
+    const dich = document.getElementById("editorDich").value;
+    const setup = document.getElementById("editorSetup").value;
+    const loop = document.getElementById("editorLoop").value;
+    const func = document.getElementById("editorFunc").value;
+
+    const id = Date.now();
+
+    set(ref(db, "progetti/arduino/" + id), {
+        dichiarazioni: dich,
+        setup,
+        loop,
+        funzioni: func
+    });
+
+    alert("Progetto Arduino salvato!");
+};
+
+// Genera file .ino
+window.generaFile = function() {
+    const dich = document.getElementById("editorDich").value;
+    const setup = document.getElementById("editorSetup").value;
+    const loop = document.getElementById("editorLoop").value;
+    const func = document.getElementById("editorFunc").value;
+
+    const finale = `
+// DICHIARAZIONI
+${dich}
+
+void setup() {
+${setup}
+}
+
+void loop() {
+${loop}
+}
+
+${func}
+`;
+
+    console.log(finale);
+    alert("File .ino generato! Lo trovi nella console.");
+};
+
+</script>
+
+</body>
+</html>
