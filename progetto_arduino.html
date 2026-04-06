@@ -32,12 +32,6 @@
         display: block;
     }
 
-    .sectionTitle {
-        font-size: 60px;
-        margin-top: 40px;
-        margin-bottom: 20px;
-    }
-
     select, textarea, button {
         width: 90%;
         font-size: 50px;
@@ -80,6 +74,14 @@
 
 <button class="homeBtn" onclick="window.location.href='linguaggio.html'">🏠 HOME</button>
 
+<!-- Selezione modello Arduino -->
+<select id="selectModello">
+    <option value="">-- Seleziona modello Arduino --</option>
+    <option value="uno">Arduino UNO</option>
+    <option value="nano">Arduino Nano</option>
+    <option value="mega">Arduino Mega</option>
+</select>
+
 <!-- DICHIARAZIONI -->
 <div class="sectionTitle">Dichiarazioni Globali</div>
 <select id="selectDich"></select>
@@ -108,7 +110,7 @@
 <button class="saveBtn" onclick="salvaProgetto()">💾 Salva Progetto</button>
 <button class="generateBtn" onclick="generaFile()">⚙️ Genera File .ino</button>
 
-<!-- Firebase -->
+<!-- Firebase + Logica PIN -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -127,7 +129,35 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Carica capitoli Arduino nelle tendine
+/* -------------------------------
+   MAPPA PIN PER OGNI MODELLO
+--------------------------------*/
+const pinMap = {
+    "uno": {
+        digital: ["0","1","2","3","4","5","6","7","8","9","10","11","12","13"],
+        analog: ["A0","A1","A2","A3","A4","A5"],
+        pwm: ["3","5","6","9","10","11"],
+        reserved: ["0","1"]
+    },
+    "nano": {
+        digital: ["0","1","2","3","4","5","6","7","8","9","10","11","12","13"],
+        analog: ["A0","A1","A2","A3","A4","A5","A6","A7"],
+        pwm: ["3","5","6","9","10","11"],
+        reserved: ["0","1"]
+    },
+    "mega": {
+        digital: Array.from({length: 54}, (_,i)=>""+i),
+        analog: Array.from({length: 16}, (_,i)=>"A"+i),
+        pwm: ["2","3","4","5","6","7","8","9","10","11","12","13","44","45","46"],
+        reserved: ["0","1","20","21"]
+    }
+};
+
+let pinUsati = [];
+
+/* -------------------------------
+   CARICA CAPITOLI ARDUINO
+--------------------------------*/
 function caricaCapitoli() {
     const dbRef = ref(db);
 
@@ -148,10 +178,9 @@ function caricaCapitoli() {
 
         Object.entries(blocchi).forEach(([id, cap]) => {
             const opt = document.createElement("option");
-            opt.value = cap.codice || "";
-            opt.textContent = cap.descrizione;
+            opt.value = JSON.stringify(cap);
+            opt.textContent = cap.nome;
 
-            // Tutti i blocchi possono andare ovunque
             document.getElementById("selectDich").appendChild(opt.cloneNode(true));
             document.getElementById("selectSetup").appendChild(opt.cloneNode(true));
             document.getElementById("selectLoop").appendChild(opt.cloneNode(true));
@@ -162,23 +191,100 @@ function caricaCapitoli() {
 
 caricaCapitoli();
 
-// Aggiunge blocchi agli editor
-window.aggiungiBlocco = function(tipo) {
-    let val = "";
-    if (tipo === "dich") val = document.getElementById("selectDich").value;
-    if (tipo === "setup") val = document.getElementById("selectSetup").value;
-    if (tipo === "loop") val = document.getElementById("selectLoop").value;
-    if (tipo === "func") val = document.getElementById("selectFunc").value;
+/* -------------------------------
+   SCELTA PIN
+--------------------------------*/
+async function scegliPin(placeholder, modello) {
+    return new Promise(resolve => {
 
-    if (!val) return;
+        let disponibili = [];
 
-    if (tipo === "dich") document.getElementById("editorDich").value += "\n" + val;
-    if (tipo === "setup") document.getElementById("editorSetup").value += "\n" + val;
-    if (tipo === "loop") document.getElementById("editorLoop").value += "\n" + val;
-    if (tipo === "func") document.getElementById("editorFunc").value += "\n\n" + val;
+        if (placeholder === "PIN_INPUT") {
+            disponibili = [...pinMap[modello].analog, ...pinMap[modello].digital];
+        }
+
+        if (placeholder === "PIN_OUTPUT") {
+            disponibili = [...pinMap[modello].digital];
+        }
+
+        if (placeholder === "PIN_PWM") {
+            disponibili = [...pinMap[modello].pwm];
+        }
+
+        disponibili = disponibili.filter(p => !pinUsati.includes(p));
+
+        const scelta = prompt(
+            `Scegli un PIN per ${placeholder}:\n\n` +
+            disponibili.join(", ")
+        );
+
+        if (!scelta || !disponibili.includes(scelta)) {
+            alert("PIN non valido");
+            resolve(null);
+        } else {
+            pinUsati.push(scelta);
+            resolve(scelta);
+        }
+    });
+}
+
+/* -------------------------------
+   SOSTITUZIONE PLACEHOLDER
+--------------------------------*/
+async function processaBlocchi(codice, modello) {
+
+    const placeholders = ["PIN_INPUT", "PIN_OUTPUT", "PIN_PWM"];
+
+    for (let ph of placeholders) {
+        if (codice.includes(ph)) {
+            const pin = await scegliPin(ph, modello);
+            if (pin) {
+                codice = codice.replaceAll(ph, pin);
+            }
+        }
+    }
+
+    return codice;
+}
+
+/* -------------------------------
+   AGGIUNGI BLOCCO
+--------------------------------*/
+window.aggiungiBlocco = async function(tipo) {
+
+    const modello = document.getElementById("selectModello").value;
+    if (!modello) {
+        alert("Seleziona prima un modello Arduino");
+        return;
+    }
+
+    let cap = null;
+
+    if (tipo === "dich") cap = JSON.parse(document.getElementById("selectDich").value || "null");
+    if (tipo === "setup") cap = JSON.parse(document.getElementById("selectSetup").value || "null");
+    if (tipo === "loop") cap = JSON.parse(document.getElementById("selectLoop").value || "null");
+    if (tipo === "func") cap = JSON.parse(document.getElementById("selectFunc").value || "null");
+
+    if (!cap) return;
+
+    let codice = "";
+
+    if (tipo === "dich") codice = cap.dichiarazioni;
+    if (tipo === "setup") codice = cap.setup;
+    if (tipo === "loop") codice = cap.loop;
+    if (tipo === "func") codice = cap.funzioni;
+
+    codice = await processaBlocchi(codice, modello);
+
+    if (tipo === "dich") document.getElementById("editorDich").value += "\n" + codice;
+    if (tipo === "setup") document.getElementById("editorSetup").value += "\n" + codice;
+    if (tipo === "loop") document.getElementById("editorLoop").value += "\n" + codice;
+    if (tipo === "func") document.getElementById("editorFunc").value += "\n\n" + codice;
 };
 
-// Salva progetto
+/* -------------------------------
+   SALVA PROGETTO
+--------------------------------*/
 window.salvaProgetto = function() {
     const dich = document.getElementById("editorDich").value;
     const setup = document.getElementById("editorSetup").value;
@@ -197,7 +303,9 @@ window.salvaProgetto = function() {
     alert("Progetto Arduino salvato!");
 };
 
-// Genera file .ino
+/* -------------------------------
+   GENERA FILE .INO
+--------------------------------*/
 window.generaFile = function() {
     const dich = document.getElementById("editorDich").value;
     const setup = document.getElementById("editorSetup").value;
