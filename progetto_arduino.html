@@ -307,9 +307,6 @@ window.salvaProgetto = function() {
 };
 
 /* -------------------------------
-   GENERA FILE .INO
---------------------------------*/
-w/* -------------------------------
    GENERA E SCARICA FILE .INO
 --------------------------------*/
 window.generaFile = function() {
@@ -333,12 +330,14 @@ ${loop}
 ${func}
 `;
 
+    // Nome file personalizzato
+    let nome = document.getElementById("nomeFile").value.trim();
+    if (nome === "") nome = "progetto_arduino";
+    const nomeFile = nome + ".ino";
+
     // Crea il file
     const blob = new Blob([finale], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-
-    // Nome file
-    const nomeFile = "progetto_arduino.ino";
 
     // Crea link invisibile
     const a = document.createElement("a");
@@ -353,9 +352,8 @@ ${func}
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    alert("File .ino scaricato!");
+    alert("File .ino scaricato come: " + nomeFile);
 };
-
 /* -------------------------------
    CARICAMENTO AUTOMATICO PROGETTO
 --------------------------------*/
