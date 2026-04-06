@@ -195,39 +195,59 @@ function caricaCapitoli() {
 caricaCapitoli();
 
 /* -------------------------------
-   SCELTA PIN
+   SELEZIONE PIN CON POPUP
 --------------------------------*/
-async function scegliPin(placeholder, modello) {
+function scegliPin(placeholder, modello) {
     return new Promise(resolve => {
 
+        const popup = document.getElementById("popupPin");
+        const select = document.getElementById("popupSelectPin");
+        const title = document.getElementById("popupTitle");
+
+        // Titolo popup
+        title.textContent = "Seleziona PIN per " + placeholder;
+
+        // Calcola PIN disponibili
         let disponibili = [];
 
         if (placeholder === "PIN_INPUT") {
             disponibili = [...pinMap[modello].analog, ...pinMap[modello].digital];
         }
-
         if (placeholder === "PIN_OUTPUT") {
             disponibili = [...pinMap[modello].digital];
         }
-
         if (placeholder === "PIN_PWM") {
             disponibili = [...pinMap[modello].pwm];
         }
 
+        // Rimuovi PIN già usati
         disponibili = disponibili.filter(p => !pinUsati.includes(p));
 
-        const scelta = prompt(
-            `Scegli un PIN per ${placeholder}:\n\n` +
-            disponibili.join(", ")
-        );
+        // Riempie la tendina
+        select.innerHTML = "";
+        disponibili.forEach(pin => {
+            const opt = document.createElement("option");
+            opt.value = pin;
+            opt.textContent = pin;
+            select.appendChild(opt);
+        });
 
-        if (!scelta || !disponibili.includes(scelta)) {
-            alert("PIN non valido");
+        // Mostra popup
+        popup.style.display = "flex";
+
+        // OK
+        document.getElementById("popupOk").onclick = () => {
+            const scelto = select.value;
+            pinUsati.push(scelto);
+            popup.style.display = "none";
+            resolve(scelto);
+        };
+
+        // Annulla
+        document.getElementById("popupCancel").onclick = () => {
+            popup.style.display = "none";
             resolve(null);
-        } else {
-            pinUsati.push(scelta);
-            resolve(scelta);
-        }
+        };
     });
 }
 
