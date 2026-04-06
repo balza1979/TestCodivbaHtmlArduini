@@ -251,6 +251,63 @@ function scegliPin(placeholder, modello) {
     });
 }
 /* -------------------------------
+   SELEZIONE PIN CON POPUP
+--------------------------------*/
+function scegliPin(placeholder, modello) {
+    return new Promise(resolve => {
+
+        const popup = document.getElementById("popupPin");
+        const select = document.getElementById("popupSelectPin");
+        const title = document.getElementById("popupTitle");
+
+        // Titolo popup
+        title.textContent = "Seleziona PIN per " + placeholder;
+
+        // Calcola PIN disponibili
+        let disponibili = [];
+
+        if (placeholder === "PIN_INPUT") {
+            disponibili = [...pinMap[modello].analog, ...pinMap[modello].digital];
+        }
+        if (placeholder === "PIN_OUTPUT") {
+            disponibili = [...pinMap[modello].digital];
+        }
+        if (placeholder === "PIN_PWM") {
+            disponibili = [...pinMap[modello].pwm];
+        }
+
+        // Rimuovi PIN già usati
+        disponibili = disponibili.filter(p => !pinUsati.includes(p));
+
+        // Riempie la tendina
+        select.innerHTML = "";
+        disponibili.forEach(pin => {
+            const opt = document.createElement("option");
+            opt.value = pin;
+            opt.textContent = pin;
+            select.appendChild(opt);
+        });
+
+        // Mostra popup
+        popup.style.display = "flex";
+
+        // OK
+        document.getElementById("popupOk").onclick = () => {
+            const scelto = select.value;
+            pinUsati.push(scelto);
+            popup.style.display = "none";
+            resolve(scelto);
+        };
+
+        // Annulla
+        document.getElementById("popupCancel").onclick = () => {
+            popup.style.display = "none";
+            resolve(null);
+        };
+    });
+}
+
+/* -------------------------------
    RILEVA PIN MODIFICATI MANUALMENTE
 --------------------------------*/
 function aggiornaPinDaCodice() {
@@ -273,28 +330,7 @@ function aggiornaPinDaCodice() {
 // Attiva il controllo in tempo reale
 ["editorDich","editorSetup","editorLoop","editorFunc"].forEach(id => {
     document.getElementById(id).addEventListener("keyup", aggiornaPinDaCodice);
-});unction aggiornaPinDaCodice() {
-    const testo = 
-        document.getElementById("editorDich").value + "\n" +
-        document.getElementById("editorSetup").value + "\n" +
-        document.getElementById("editorLoop").value + "\n" +
-        document.getElementById("editorFunc").value;
-
-    const regex = /=\s*([A]?\d+)\s*;/g;
-
-    pinUsati = [];
-    let match;
-
-    while ((match = regex.exec(testo)) !== null) {
-        pinUsati.push(match[1]);
-    }
-}
-
-// Attiva il controllo in tempo reale
-["editorDich","editorSetup","editorLoop","editorFunc"].forEach(id => {
-    document.getElementById(id).addEventListener("keyup", aggiornaPinDaCodice);
 });
-
 
 /* -------------------------------
    SOSTITUZIONE PLACEHOLDER
@@ -313,7 +349,6 @@ async function processaBlocchi(codice, modello) {
 
     return codice;
 }
-
 /* -------------------------------
    AGGIUNGI BLOCCO
 --------------------------------*/
