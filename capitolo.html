@@ -251,6 +251,19 @@ function rimuoviDettaglio(id) {
     <button onclick="eliminaCapitolo()" style="background:#cc0000;">ELIMINA CAPITOLO</button>
   <!-- FIREBASE -->
 <script type="module">
+    // 🎨 Imposta colore di sfondo in base al linguaggio scelto
+const lang = localStorage.getItem("linguaggio") || "default";
+
+const colori = {
+    javascript: "#F7DF1E",
+    html: "#E44D26",
+    css: "#264DE4",
+    vba: "#6A1B9A",
+    arduino: "#00979D",
+    excel: "#1D6F42"
+};
+
+document.body.style.background = colori[lang] || "#DDD";
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, set, get, child, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
     const firebaseConfig = {
