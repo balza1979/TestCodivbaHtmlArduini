@@ -259,11 +259,10 @@ async function processaBlocchi(codice, modello) {
     const placeholders = ["PIN_INPUT", "PIN_OUTPUT", "PIN_PWM"];
 
     for (let ph of placeholders) {
-        if (codice.includes(ph)) {
+        while (codice.includes(ph)) {
             const pin = await scegliPin(ph, modello);
-            if (pin) {
-                codice = codice.replaceAll(ph, pin);
-            }
+            if (!pin) return codice; // annullato
+            codice = codice.replace(ph, pin);
         }
     }
 
