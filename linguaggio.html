@@ -16,29 +16,31 @@
     h1 {
         font-size: 90px;
         margin-bottom: 40px;
-        color: black; /* Titolo nero */
+        color: black;
     }
-.homeBtn {
-    width: 90%;
-    padding: 40px;
-    margin: 20px auto 50px auto;
-    font-size: 60px;
-    border-radius: 30px;
-    border: 5px solid black;
-    background: white;
-    color: black;
-    font-weight: bold;
-    display: block;
-}
+
+    .homeBtn {
+        width: 90%;
+        padding: 40px;
+        margin: 20px auto 50px auto;
+        font-size: 60px;
+        border-radius: 30px;
+        border: 5px solid black;
+        background: white;
+        color: black;
+        font-weight: bold;
+        display: block;
+    }
+
     .btn {
         width: 90%;
         padding: 50px;
         margin: 25px auto;
         font-size: 60px;
         border-radius: 30px;
-        border: 5px solid black; /* Bordo per contrasto */
-        background: white; /* Pulsanti bianchi */
-        color: black; /* Testo nero */
+        border: 5px solid black;
+        background: white;
+        color: black;
         font-weight: bold;
         display: block;
     }
@@ -48,6 +50,10 @@
 <body>
 
 <h1 id="titolo"></h1>
+
+<!-- ✅ IL BOTTONE HOME VA QUI, FUORI DALLO SCRIPT -->
+<button class="homeBtn" onclick="window.location.href='index.html'">🏠 HOME</button>
+
 <div id="menu"></div>
 
 <script>
@@ -74,48 +80,7 @@ const titoli = {
 };
 
 document.getElementById("titolo").textContent = titoli[lang] || "Linguaggio";
-<button class="homeBtn" onclick="window.location.href='index.html'">🏠 HOME</button>
+
 const menu = {
     javascript: [
-        { t: "Aggiungi / Modifica Capitolo", a: "capitolo.html" },
-        { t: "Crea nuovo Script", a: "progetto_js.html" },
-        { t: "Apri Script esistente", a: "lista_js.html" }
-    ],
-    html: [
-        { t: "Aggiungi / Modifica Capitolo", a: "capitolo.html" },
-        { t: "Crea nuovo Template HTML", a: "progetto_html.html" },
-        { t: "Apri Template esistente", a: "lista_html.html" }
-    ],
-    css: [
-        { t: "Aggiungi / Modifica Capitolo", a: "capitolo.html" },
-        { t: "Crea nuovo Foglio di Stile", a: "progetto_css.html" },
-        { t: "Apri Foglio di Stile", a: "lista_css.html" }
-    ],
-    vba: [
-        { t: "Aggiungi / Modifica Capitolo", a: "capitolo.html" },
-        { t: "Crea nuova Macro", a: "progetto_vba.html" },
-        { t: "Apri Macro esistente", a: "lista_vba.html" }
-    ],
-    arduino: [
-        { t: "Aggiungi / Modifica Capitolo", a: "capitolo.html" },
-        { t: "Crea nuovo Progetto Arduino", a: "progetto_arduino.html" },
-        { t: "Apri Progetto Arduino", a: "lista_arduino.html" }
-    ],
-    excel: [
-        { t: "Aggiungi / Modifica Capitolo", a: "capitolo.html" },
-        { t: "Crea nuovo Progetto Excel", a: "progetto_excel.html" },
-        { t: "Apri Progetto Excel", a: "lista_excel.html" }
-    ]
-};
-
-menu[lang].forEach(item => {
-    const b = document.createElement("button");
-    b.className = "btn";
-    b.textContent = item.t;
-    b.onclick = () => window.location.href = item.a;
-    document.getElementById("menu").appendChild(b);
-});
-</script>
-
-</body>
-</html>
+        { t: "Aggiungi /
