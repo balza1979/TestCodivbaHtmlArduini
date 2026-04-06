@@ -291,7 +291,7 @@ window.salvaProgetto = function() {
     const loop = document.getElementById("editorLoop").value;
     const func = document.getElementById("editorFunc").value;
 
-    const id = Date.now();
+    const id = localStorage.getItem("progettoArduinoID") || Date.now();
 
     set(ref(db, "progetti/arduino/" + id), {
         dichiarazioni: dich,
@@ -299,6 +299,8 @@ window.salvaProgetto = function() {
         loop,
         funzioni: func
     });
+
+    localStorage.setItem("progettoArduinoID", id);
 
     alert("Progetto Arduino salvato!");
 };
@@ -330,6 +332,29 @@ ${func}
     console.log(finale);
     alert("File .ino generato! Lo trovi nella console.");
 };
+
+/* -------------------------------
+   CARICAMENTO AUTOMATICO PROGETTO
+--------------------------------*/
+function caricaProgettoAutomatico() {
+    const id = localStorage.getItem("progettoArduinoID");
+    if (!id) return;
+
+    const dbRef = ref(db);
+
+    get(child(dbRef, "progetti/arduino/" + id)).then(snap => {
+        if (!snap.exists()) return;
+
+        const dati = snap.val();
+
+        document.getElementById("editorDich").value = dati.dichiarazioni || "";
+        document.getElementById("editorSetup").value = dati.setup || "";
+        document.getElementById("editorLoop").value = dati.loop || "";
+        document.getElementById("editorFunc").value = dati.funzioni || "";
+    });
+}
+
+caricaProgettoAutomatico();
 
 </script>
 
