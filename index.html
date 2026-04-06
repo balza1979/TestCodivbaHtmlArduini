@@ -355,7 +355,20 @@ function rimuoviDettaglio(id) {
                 appunti3: box.querySelector(".app3")?.value || ""
             });
         });
-window.eliminaCapitolo = function() {
+
+        const id = capitoloCorrente || Date.now();
+
+        set(ref(db, "capitoli/" + id), {
+            descrizione,
+            codice,
+            dettagli
+        });
+
+        capitoloCorrente = id;
+
+        alert("Capitolo salvato!");
+    };
+    window.eliminaCapitolo = function() {
     if (!capitoloCorrente) {
         alert("Nessun capitolo selezionato da eliminare");
         return;
@@ -379,18 +392,6 @@ window.eliminaCapitolo = function() {
             document.getElementById("risultatiRicerca").value = "";
         });
 };
-        const id = capitoloCorrente || Date.now();
-
-        set(ref(db, "capitoli/" + id), {
-            descrizione,
-            codice,
-            dettagli
-        });
-
-        capitoloCorrente = id;
-
-        alert("Capitolo salvato!");
-    };
 </script>
 
 </body>
