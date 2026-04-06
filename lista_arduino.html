@@ -101,15 +101,24 @@ function caricaLista() {
         if (!snap.exists()) return;
 
         Object.entries(snap.val()).forEach(([id, dati]) => {
-            const data = new Date(Number(id));
-            const nome = `Progetto del ${data.toLocaleDateString()} ${data.toLocaleTimeString()}`;
 
-            const opt = document.createElement("option");
-            opt.value = id;
-            opt.textContent = nome;
+    let nome = "";
 
-            sel.appendChild(opt);
-        });
+    if (dati.nomeFile && dati.nomeFile.trim() !== "") {
+        // 🔥 Se il progetto ha un nome file → usalo come nome progetto
+        nome = dati.nomeFile + ".ino";
+    } else {
+        // Altrimenti usa una data leggibile
+        const data = new Date(Number(id));
+        nome = `Progetto del ${data.toLocaleDateString()} ${data.toLocaleTimeString()}`;
+    }
+
+    const opt = document.createElement("option");
+    opt.value = id;
+    opt.textContent = nome;
+
+    sel.appendChild(opt);
+});
     });
 }
 
