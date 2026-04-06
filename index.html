@@ -8,49 +8,54 @@
     body {
         font-family: Arial;
         margin: 20px;
+        font-size: 22px; /* FONT GRANDE */
     }
 
     h1 {
         text-align: center;
+        font-size: 32px;
     }
 
     .box {
-        border: 1px solid #ccc;
-        padding: 15px;
-        margin-top: 15px;
-        border-radius: 8px;
+        border: 2px solid #ccc;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 10px;
         background: #f9f9f9;
     }
 
     .row {
-        margin-bottom: 10px;
+        margin-bottom: 15px;
     }
 
     label {
         font-weight: bold;
+        font-size: 26px;
     }
 
     input, textarea, select {
         width: 100%;
-        padding: 8px;
+        padding: 12px;
         margin-top: 5px;
-        border-radius: 5px;
-        border: 1px solid #aaa;
+        border-radius: 8px;
+        border: 2px solid #aaa;
+        font-size: 22px;
     }
 
     button {
-        padding: 10px 20px;
-        margin-top: 15px;
+        padding: 15px 25px;
+        margin-top: 20px;
         border: none;
         background: #007bff;
         color: white;
-        border-radius: 5px;
+        border-radius: 8px;
         cursor: pointer;
+        font-size: 26px;
     }
 
     .deleteBtn {
         background: red;
-        margin-top: 10px;
+        margin-top: 15px;
     }
 </style>
 
@@ -72,7 +77,7 @@
 </div>
 
 <!-- DETTAGLI -->
-<h2>DETTAGLI</h2>
+<h2 style="font-size:30px;">DETTAGLI</h2>
 <div id="contenitoreDettagli"></div>
 
 <button onclick="aggiungiDettaglio()">AGGIUNGI DETTAGLIO</button>
@@ -111,8 +116,21 @@ function aggiungiDettaglio() {
         </div>
 
         <div class="row">
-            <label>VALORE / CODICE</label>
+            <label>MODALITÀ VALORE</label>
+            <select onchange="cambiaModalita(this, '${div.id}')">
+                <option value="tendina">Valori predefiniti (tendina)</option>
+                <option value="libero">Valore libero (input)</option>
+            </select>
+        </div>
+
+        <div class="row valoreTendina">
+            <label>VALORE / CODICE (per tendina)</label>
             <input type="text" placeholder="es: 000314">
+        </div>
+
+        <div class="row valoreLibero" style="display:none;">
+            <label>VALORE LIBERO</label>
+            <input type="text" placeholder="es: 10">
         </div>
 
         <div class="row">
@@ -134,6 +152,20 @@ function aggiungiDettaglio() {
     `;
 
     document.getElementById("contenitoreDettagli").appendChild(div);
+}
+
+function cambiaModalita(select, id) {
+    const box = document.getElementById(id);
+    const tendina = box.querySelector(".valoreTendina");
+    const libero = box.querySelector(".valoreLibero");
+
+    if (select.value === "tendina") {
+        tendina.style.display = "block";
+        libero.style.display = "none";
+    } else {
+        tendina.style.display = "none";
+        libero.style.display = "block";
+    }
 }
 
 function rimuoviDettaglio(id) {
