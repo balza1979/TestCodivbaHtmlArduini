@@ -2,338 +2,199 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Progetto Arduino</title>
 
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap">
-
 <style>
-body {
-    font-family: 'Roboto', sans-serif;
-    background: #f2f2f2;
-    margin: 0;
-    padding: 20px;
-}
+    body {
+        font-family: Arial;
+        margin: 0;
+        padding: 40px;
+        background: #00979D; /* Azzurro Arduino */
+        color: black;
+        text-align: center;
+    }
 
-.titolo {
-    text-align: center;
-    color: #00979D;
-    font-size: 60px;
-    margin-bottom: 40px;
-}
+    h1 {
+        font-size: 80px;
+        margin-bottom: 20px;
+    }
 
-.sezione {
-    margin-bottom: 60px;
-}
+    .homeBtn {
+        width: 90%;
+        padding: 40px;
+        margin: 20px auto 50px auto;
+        font-size: 60px;
+        border-radius: 30px;
+        border: 5px solid black;
+        background: white;
+        color: black;
+        font-weight: bold;
+        display: block;
+    }
 
-h2 {
-    font-size: 50px;
-    color: #333;
-    margin-bottom: 20px;
-}
+    select, textarea, button, input {
+        width: 90%;
+        font-size: 50px;
+        padding: 30px;
+        margin: 20px auto;
+        border-radius: 20px;
+        border: 4px solid black;
+        display: block;
+        box-sizing: border-box;
+    }
 
-/* CHIP FULL-WIDTH */
-.chip {
-    width: 100%;
-    padding: 30px;
-    border-radius: 25px;
-    margin-bottom: 20px;
-    color: white;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    transition: transform 0.15s ease;
-    text-align: left;
-}
+    textarea {
+        height: 350px;
+        background: white;
+        color: black;
+    }
 
-.chip:hover {
-    transform: scale(1.02);
-}
+    .addBtn {
+        background: white;
+        color: black;
+        font-weight: bold;
+    }
 
-.chip.active {
-    outline: 5px solid #ffffff;
-}
+    .saveBtn {
+        background: #28a745;
+        color: white;
+        font-weight: bold;
+    }
 
-/* Nome grande */
-.titoloChip {
-    font-size: 45px;
-    font-weight: 700;
-}
+    .generateBtn {
+        background: #000;
+        color: white;
+        font-weight: bold;
+    }
 
-/* Descrizione piccola */
-.descrizioneChip {
-    font-size: 32px;
-    opacity: 0.85;
-}
+    /* ----------------------------- */
+    /* CHIP FULL-WIDTH COLORATI      */
+    /* ----------------------------- */
+    .chipContainer {
+        width: 90%;
+        margin: 0 auto 30px auto;
+    }
 
-/* SELECT */
-.selectBlocchi {
-    width: 100%;
-    padding: 25px;
-    font-size: 40px;
-    border-radius: 20px;
-    border: 3px solid #00979D;
-    margin-top: 20px;
-}
+    .chip {
+        width: 100%;
+        padding: 35px;
+        border-radius: 30px;
+        margin-bottom: 25px;
+        color: white;
+        text-align: left;
+        box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+        cursor: pointer;
+        transition: transform 0.15s ease;
+    }
 
-/* POPUP PIN */
-.popup {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6);
-}
+    .chip:hover {
+        transform: scale(1.02);
+    }
 
-.popupContent {
-    background: white;
-    padding: 40px;
-    border-radius: 20px;
-    width: 90%;
-    margin: 100px auto;
-    text-align: center;
-}
+    .chip.active {
+        outline: 6px solid white;
+    }
+
+    .chipTitle {
+        font-size: 55px;
+        font-weight: bold;
+    }
+
+    .chipDesc {
+        font-size: 40px;
+        opacity: 0.85;
+    }
+
+    /* Nascondo le select finché non si clicca un chip */
+    .selectBlocchi {
+        display: none;
+    }
+
+    /* POPUP PIN */
+    #popupPin {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.6);
+        display: none;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #popupBox {
+        background: white;
+        padding: 40px;
+        border-radius: 30px;
+        width: 80%;
+        text-align: center;
+        border: 6px solid black;
+    }
+
+    #popupBox select {
+        font-size: 55px;
+        padding: 25px;
+        border-radius: 20px;
+        border: 4px solid black;
+        width: 100%;
+    }
+
+    #popupBox button {
+        font-size: 55px;
+        padding: 25px;
+        margin-top: 20px;
+        border-radius: 20px;
+        width: 100%;
+        font-weight: bold;
+    }
+
+    #popupOk { background: #28a745; color: white; }
+    #popupCancel { background: #cc0000; color: white; }
 </style>
 </head>
 
 <body>
 
-<h1 class="titolo">Progetto Arduino</h1>
+<h1>Progetto Arduino</h1>
 
-<!-- ========================= -->
-<!--   SEZIONE DICHIARAZIONI   -->
-<!-- ========================= -->
-<section class="sezione">
-    <h2>Dichiarazioni</h2>
+<button class="homeBtn" onclick="nuovoProgetto()">🆕 Nuovo Progetto</button>
+<button class="homeBtn" onclick="window.location.href='linguaggio.html'">🏠 HOME</button>
 
-    <div class="chipContainer" data-target="selectDich"></div>
+<!-- MODELLO -->
+<select id="selectModello">
+    <option value="">-- Seleziona modello Arduino --</option>
+    <option value="uno">Arduino UNO</option>
+    <option value="nano">Arduino Nano</option>
+    <option value="mega">Arduino Mega</option>
+</select>
 
-    <select id="selectDich" class="selectBlocchi"></select>
-</section>
+<!-- DICHIARAZIONI -->
+<div class="sectionTitle">Dichiarazioni Globali</div>
 
-<!-- ========================= -->
-<!--        SEZIONE SETUP      -->
-<!-- ========================= -->
-<section class="sezione">
-    <h2>Setup</h2>
+<div class="chipContainer" id="chipsDich"></div>
 
-    <div class="chipContainer" data-target="selectSetup"></div>
+<select id="selectDich" class="selectBlocchi"></select>
+<button class="addBtn" onclick="aggiungiBlocco('dich')">➕ Aggiungi a Dichiarazioni</button>
+<textarea id="editorDich" placeholder="// Variabili, costanti, librerie..."></textarea>
 
-    <select id="selectSetup" class="selectBlocchi"></select>
-</section>
+<!-- SETUP -->
+<div class="sectionTitle">Setup()</div>
 
-<!-- ========================= -->
-<!--         SEZIONE LOOP      -->
-<!-- ========================= -->
-<section class="sezione">
-    <h2>Loop</h2>
+<div class="chipContainer" id="chipsSetup"></div>
 
-    <div class="chipContainer" data-target="selectLoop"></div>
+<select id="selectSetup" class="selectBlocchi"></select>
+<button class="addBtn" onclick="aggiungiBlocco('setup')">➕ Aggiungi a setup()</button>
+<textarea id="editorSetup" placeholder="// Codice di inizializzazione..."></textarea>
 
-    <select id="selectLoop" class="selectBlocchi"></select>
-</section>
+<!-- LOOP -->
+<div class="sectionTitle">Loop()</div>
 
-<!-- ========================= -->
-<!--     SEZIONE FUNZIONI      -->
-<!-- ========================= -->
-<section class="sezione">
-    <h2>Funzioni Extra</h2>
+<div class="chipContainer" id="chipsLoop"></div>
 
-    <div class="chipContainer" data-target="selectFunc"></div>
-
-    <select id="selectFunc" class="selectBlocchi"></select>
-</section>
-
-<!-- POPUP PIN -->
-<div id="popupPin" class="popup">
-    <div class="popupContent">
-        <h3>Seleziona un PIN</h3>
-        <div id="listaPin"></div>
-        <button onclick="chiudiPopupPin()">Chiudi</button>
-    </div>
-</div>
-
-<script type="module">
-
-/* ============================================================
-   CONFIGURAZIONE FIREBASE
-============================================================ */
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, child, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-const firebaseConfig = {
-    apiKey: "XXX",
-    authDomain: "XXX",
-    databaseURL: "XXX",
-    projectId: "XXX",
-    storageBucket: "XXX",
-    messagingSenderId: "XXX",
-    appId: "XXX"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+<select id="selectLoop" class="selectBlocchi"></select>
+<button class="addBtn" onclick="aggiungiBlocco('loop')">➕ Aggiungi a loop()</button>
+<textarea id="editorLoop" placeholder="// Codice ripetuto continuamente..."></textarea>
 
 
-/* ============================================================
-   DEFINIZIONE CHIP PER OGNI SEZIONE
-============================================================ */
-
-const CHIP_SEZIONI = {
-    selectDich: [
-        { tipo: "variabile", nome: "Variabile", desc: "Valore che cambia", colore: "#007BFF" },
-        { tipo: "costante", nome: "Costante", desc: "Valore fisso", colore: "#0056D2" },
-        { tipo: "array", nome: "Array", desc: "Lista di valori", colore: "#0096FF" },
-        { tipo: "stringa", nome: "Stringa", desc: "Testo", colore: "#00A8E8" },
-        { tipo: "booleano", nome: "Booleano", desc: "Vero/Falso", colore: "#0066CC" },
-        { tipo: "libreria", nome: "Libreria", desc: "#include", colore: "#6A00FF" },
-        { tipo: "configurazione", nome: "Configurazione", desc: "Parametri iniziali", colore: "#8A2BE2" },
-        { tipo: "altro", nome: "Altro", desc: "Non classificato", colore: "#444444" }
-    ],
-
-    selectSetup: [
-        { tipo: "in", nome: "Input Digitale", desc: "pinMode INPUT", colore: "#28A745" },
-        { tipo: "out", nome: "Output Digitale", desc: "pinMode OUTPUT", colore: "#DC3545" },
-        { tipo: "pwm", nome: "PWM", desc: "Uscita PWM", colore: "#C82333" },
-        { tipo: "analog_in", nome: "Analog Input", desc: "analogRead()", colore: "#17A2B8" },
-        { tipo: "analog_out", nome: "Analog Output", desc: "analogWrite()", colore: "#138496" },
-        { tipo: "tempo", nome: "Tempo", desc: "delay/millis", colore: "#FFC107" },
-        { tipo: "timer", nome: "Timer", desc: "Temporizzatori", colore: "#FFB300" },
-        { tipo: "seriale", nome: "Seriale", desc: "Serial.begin()", colore: "#6C757D" },
-        { tipo: "inizializzazione", nome: "Inizializzazione", desc: "Setup sensori", colore: "#20C997" },
-        { tipo: "altro", nome: "Altro", desc: "Non classificato", colore: "#444444" }
-    ],
-
-    selectLoop: [
-        { tipo: "sensore", nome: "Sensore", desc: "Letture", colore: "#28A745" },
-        { tipo: "attuatore", nome: "Attuatore", desc: "Motori/LED/Relè", colore: "#E83E8C" },
-        { tipo: "controllo", nome: "Controllo", desc: "Logica IF/stati", colore: "#FD7E14" },
-        { tipo: "tempo", nome: "Tempo", desc: "delay/millis", colore: "#FFC107" },
-        { tipo: "debug", nome: "Debug", desc: "Serial.print", colore: "#6610F2" },
-        { tipo: "logica", nome: "Logica", desc: "Algoritmi", colore: "#343A40" },
-        { tipo: "altro", nome: "Altro", desc: "Non classificato", colore: "#444444" }
-    ],
-
-    selectFunc: [
-        { tipo: "funzione", nome: "Funzione", desc: "Generica", colore: "#007BFF" },
-        { tipo: "utilita", nome: "Utilità", desc: "Supporto", colore: "#17A2B8" },
-        { tipo: "sensore", nome: "Sensore", desc: "Letture", colore: "#28A745" },
-        { tipo: "attuatore", nome: "Attuatore", desc: "Comandi", colore: "#E83E8C" },
-        { tipo: "controllo", nome: "Controllo", desc: "Logica/stati", colore: "#FD7E14" },
-        { tipo: "altro", nome: "Altro", desc: "Non classificato", colore: "#444444" }
-    ]
-};
 
 
-/* ============================================================
-   GENERAZIONE CHIP DINAMICI
-============================================================ */
-
-function generaChip() {
-    document.querySelectorAll(".chipContainer").forEach(container => {
-        const target = container.dataset.target;
-        const lista = CHIP_SEZIONI[target];
-
-        lista.forEach(ch => {
-            const div = document.createElement("div");
-            div.className = "chip";
-            div.dataset.type = ch.tipo;
-            div.style.background = ch.colore;
-
-            div.innerHTML = `
-                <div class="titoloChip">${ch.nome}</div>
-                <div class="descrizioneChip">${ch.desc}</div>
-            `;
-
-            div.addEventListener("click", () => {
-                div.classList.toggle("active");
-                applicaFiltroTipi(target, window._blocchiArduino);
-            });
-
-            container.appendChild(div);
-        });
-    });
-}
-
-generaChip();
-
-
-/* ============================================================
-   FILTRO MULTIPLO + SELECT RAGGRUPPATA
-============================================================ */
-
-function applicaFiltroTipi(selectId, blocchi) {
-
-    const chips = document.querySelectorAll(`.chipContainer[data-target="${selectId}"] .chip`);
-    const attivi = [...chips].filter(c => c.classList.contains("active")).map(c => c.dataset.type);
-
-    const select = document.getElementById(selectId);
-    select.innerHTML = "";
-
-    const mostraTutto = attivi.length === 0;
-    const gruppi = {};
-
-    for (let key in blocchi) {
-        const b = blocchi[key];
-        const tipo = b.tipo || "altro";
-
-        if (!mostraTutto && !attivi.includes(tipo)) continue;
-
-        if (!gruppi[tipo]) gruppi[tipo] = [];
-        gruppi[tipo].push(b);
-    }
-
-    for (let tipo in gruppi) {
-        const optgroup = document.createElement("optgroup");
-        optgroup.label = tipo.toUpperCase();
-
-        gruppi[tipo].forEach(b => {
-            const opt = document.createElement("option");
-            opt.value = JSON.stringify(b);
-            opt.textContent = b.nome;
-            optgroup.appendChild(opt);
-        });
-
-        select.appendChild(optgroup);
-    }
-}
-
-
-/* ============================================================
-   CARICAMENTO BLOCCHI DA FIREBASE
-============================================================ */
-
-function caricaCapitoli() {
-    const dbRef = ref(db);
-
-    get(child(dbRef, "capitoli/arduino")).then(snap => {
-        const blocchi = snap.exists() ? snap.val() : {};
-
-        window._blocchiArduino = blocchi;
-
-        applicaFiltroTipi("selectDich", blocchi);
-        applicaFiltroTipi("selectSetup", blocchi);
-        applicaFiltroTipi("selectLoop", blocchi);
-        applicaFiltroTipi("selectFunc", blocchi);
-    });
-}
-
-caricaCapitoli();
-
-
-/* ============================================================
-   POPUP PIN
-============================================================ */
-
-function apriPopupPin() {
-    document.getElementById("popupPin").style.display = "block";
-}
-
-function chiudiPopupPin() {
-    document.getElementById("popupPin").style.display = "none";
-}
-
-</script>
-
-</body>
-</html>
+    
