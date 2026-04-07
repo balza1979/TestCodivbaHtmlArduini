@@ -260,6 +260,44 @@ function mostraPopupPin(placeholder, modello) {
 }
 
 /* -------------------------------
+   RICONOSCIMENTO AVANZATO PIN
+--------------------------------*/
+function aggiornaPinDaCodice() {
+
+    const testo =
+        editorDich.value + "\n" +
+        editorSetup.value + "\n" +
+        editorLoop.value + "\n" +
+        editorFunc.value;
+
+    // Digitali 0–53
+    const regexDigital = /\b([0-9]|[1-4][0-9]|5[0-3])\b/g;
+
+    // Analogici A0–A15
+    const regexAnalog = /\bA([0-9]|1[0-5])\b/g;
+
+    pinUsati = [];
+
+    let match;
+
+    while ((match = regexDigital.exec(testo)) !== null) {
+        pinUsati.push(match[1]);
+    }
+
+    while ((match = regexAnalog.exec(testo)) !== null) {
+        pinUsati.push("A" + match[1]);
+    }
+
+    pinUsati = [...new Set(pinUsati)];
+}
+
+/* EVENT LISTENER PER AGGIORNAMENTO AUTOMATICO */
+editorDich.addEventListener("keyup", aggiornaPinDaCodice);
+editorSetup.addEventListener("keyup", aggiornaPinDaCodice);
+editorLoop.addEventListener("keyup", aggiornaPinDaCodice);
+editorFunc.addEventListener("keyup", aggiornaPinDaCodice);
+
+/* -------------------------------
    SOSTITUZIONE PLACEHOLDER
 --------------------------------*/
 async function processaBlocchi(codice, modello) {
@@ -346,6 +384,8 @@ window.aggiungiBlocco = async function(tipo) {
     if (tipo === "setup") editorSetup.value += "\n" + codice;
     if (tipo === "loop") editorLoop.value += "\n" + codice;
     if (tipo === "func") editorFunc.value += "\n\n" + codice;
+
+    aggiornaPinDaCodice();
 };
 
 /* -------------------------------
@@ -443,6 +483,8 @@ function caricaProgettoAutomatico() {
         editorLoop.value = dati.loop || "";
         editorFunc.value = dati.funzioni || "";
         nomeFile.value = dati.nomeFile || "";
+
+        aggiornaPinDaCodice();
     });
 }
 
