@@ -107,93 +107,15 @@
         display: none;
     }
 
-    /* POPUP PIN */
-    #popupPin {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(0,0,0,0.6);
-        display: none;
-        justify-content: center;
-        align-items: center;
-    }
-
-    #popupBox {
-        background: white;
-        padding: 40px;
-        border-radius: 30px;
-        width: 80%;
-        text-align: center;
-        border: 6px solid black;
-    }
-
-    #popupBox select {
-        font-size: 55px;
-        padding: 25px;
-        border-radius: 20px;
-        border: 4px solid black;
-        width: 100%;
-    }
-
-    #popupBox button {
-        font-size: 55px;
-        padding: 25px;
-        margin-top: 20px;
-        border-radius: 20px;
-        width: 100%;
-        font-weight: bold;
-    }
-
-    #popupOk { background: #28a745; color: white; }
-    #popupCancel { background: #cc0000; color: white; }
-</style>
-</head>
-
-<body>
-
-<h1>Progetto Arduino</h1>
-
-<button class="homeBtn" onclick="nuovoProgetto()">🆕 Nuovo Progetto</button>
-<button class="homeBtn" onclick="window.location.href='linguaggio.html'">🏠 HOME</button>
-
-<!-- MODELLO -->
-<select id="selectModello">
-    <option value="">-- Seleziona modello Arduino --</option>
-    <option value="uno">Arduino UNO</option>
-    <option value="nano">Arduino Nano</option>
-    <option value="mega">Arduino Mega</option>
-</select>
-
-<!-- DICHIARAZIONI -->
-<div class="sectionTitle">Dichiarazioni Globali</div>
-
-<div class="chipContainer" id="chipsDich"></div>
-
-<select id="selectDich" class="selectBlocchi"></select>
-<button class="addBtn" onclick="aggiungiBlocco('dich')">➕ Aggiungi a Dichiarazioni</button>
-<textarea id="editorDich" placeholder="// Variabili, costanti, librerie..."></textarea>
-
-<!-- SETUP -->
-<div class="sectionTitle">Setup()</div>
-
-<div class="chipContainer" id="chipsSetup"></div>
-
-<select id="selectSetup" class="selectBlocchi"></select>
-<button class="addBtn" onclick="aggiungiBlocco('setup')">➕ Aggiungi a setup()</button>
-<textarea id="editorSetup" placeholder="// Codice di inizializzazione..."></textarea>
-
-<!-- LOOP -->
-<div class="sectionTitle">Loop()</div>
-
-<div class="chipContainer" id="chipsLoop"></div>
-
-<select id="selectLoop" class="selectBlocchi"></select>
-<button class="addBtn" onclick="aggiungiBlocco('loop')">➕ Aggiungi a loop()</button>
-<textarea id="editorLoop" placeholder="// Codice ripetuto continuamente..."></textarea>
+    /* FILTRO */
+    .filterBtn {
+        width: 90%;
+        padding
 <!-- FUNZIONI EXTRA -->
 <div class="sectionTitle">Funzioni Extra</div>
 
-<div class="chipContainer" id="chipsFunc"></div>
+<button class="filterBtn" onclick="apriFiltro('func')">Filtra</button>
+<div class="chipPanel" id="panelFunc"></div>
 
 <select id="selectFunc" class="selectBlocchi"></select>
 <button class="addBtn" onclick="aggiungiBlocco('func')">➕ Aggiungi Funzione</button>
@@ -275,49 +197,56 @@ const CHIP_TIPI = {
 
 
 /* ============================================================
-   GENERA CHIP PER OGNI SEZIONE
+   APERTURA FILTRO
 ============================================================ */
-function creaChip(containerId, tipi) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = "";
+function apriFiltro(sezione) {
+    const panel = document.getElementById("panel" + capitalize(sezione));
+    panel.innerHTML = "";
+
+    let tipi = [];
+    if (sezione === "dich") tipi = ["variabile","costante","array","stringa","booleano","libreria","configurazione","altro"];
+    if (sezione === "setup") tipi = ["in","out","pwm","analog_in","analog_out","tempo","timer","seriale","inizializzazione","altro"];
+    if (sezione === "loop") tipi = ["sensore","attuatore","controllo","tempo","debug","logica","altro"];
+    if (sezione === "func") tipi = ["funzione","utilita","sensore","attuatore","controllo","altro"];
 
     tipi.forEach(tipo => {
         const info = CHIP_TIPI[tipo];
-
         const div = document.createElement("div");
         div.className = "chip";
         div.dataset.tipo = tipo;
         div.style.background = info.colore;
-
         div.innerHTML = `
             <div class="chipTitle">${info.nome}</div>
             <div class="chipDesc">${info.desc}</div>
         `;
-
-        div.onclick = () => {
-            document.querySelectorAll(`#${containerId} .chip`).forEach(c => c.classList.remove("active"));
-            div.classList.add("active");
-
-            filtraSelect(containerId.replace("chips", "select"), tipo);
-        };
-
-        container.appendChild(div);
+        div.onclick = () => div.classList.toggle("active");
+        panel.appendChild(div);
     });
+
+    const btn = document.createElement("button");
+    btn.className = "applyFilterBtn";
+    btn.textContent = "Applica filtro";
+    btn.onclick = () => applicaFiltro(sezione);
+    panel.appendChild(btn);
+
+    panel.style.display = "block";
+    document.getElementById("select" + capitalize(sezione)).style.display = "none";
 }
 
 
 /* ============================================================
-   FILTRA SELECT IN BASE AL CHIP
+   APPLICA FILTRO
 ============================================================ */
-function filtraSelect(selectId, tipo) {
-    const select = document.getElementById(selectId);
+function applicaFiltro(sezione) {
+    const panel = document.getElementById("panel" + capitalize(sezione));
+    const select = document.getElementById("select" + capitalize(sezione));
 
-    if (!window._blocchiArduino) return;
+    const attivi = [...panel.querySelectorAll(".chip.active")].map(c => c.dataset.tipo);
 
     select.innerHTML = "";
 
     Object.values(window._blocchiArduino).forEach(b => {
-        if (b.tipo === tipo) {
+        if (attivi.includes(b.tipo)) {
             const opt = document.createElement("option");
             opt.value = JSON.stringify(b);
             opt.textContent = b.nome;
@@ -325,7 +254,14 @@ function filtraSelect(selectId, tipo) {
         }
     });
 
+    panel.style.display = "none";
     select.style.display = "block";
+}
+
+
+/* Utility */
+function capitalize(s) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 
@@ -337,215 +273,10 @@ function caricaCapitoli() {
 
     get(child(dbRef, "capitoli/arduino")).then(snap => {
         window._blocchiArduino = snap.exists() ? snap.val() : {};
-
-        creaChip("chipsDich", ["variabile","costante","array","stringa","booleano","libreria","configurazione","altro"]);
-        creaChip("chipsSetup", ["in","out","pwm","analog_in","analog_out","tempo","timer","seriale","inizializzazione","altro"]);
-        creaChip("chipsLoop", ["sensore","attuatore","controllo","tempo","debug","logica","altro"]);
-        creaChip("chipsFunc", ["funzione","utilita","sensore","attuatore","controllo","altro"]);
     });
 }
 
 caricaCapitoli();
 
-    /* EVENT LISTENER PER AGGIORNAMENTO AUTOMATICO */
-editorDich.addEventListener("keyup", aggiornaPinDaCodice);
-editorSetup.addEventListener("keyup", aggiornaPinDaCodice);
-editorLoop.addEventListener("keyup", aggiornaPinDaCodice);
-editorFunc.addEventListener("keyup", aggiornaPinDaCodice);
 
-/* -------------------------------
-   SOSTITUZIONE PLACEHOLDER
---------------------------------*/
-async function processaBlocchi(codice, modello) {
-
-    const placeholders = ["PIN_INPUT", "PIN_OUTPUT", "PIN_PWM"];
-
-    for (let ph of placeholders) {
-        while (codice.includes(ph)) {
-            const pin = await mostraPopupPin(ph, modello);
-            if (!pin) return codice;
-            codice = codice.replace(ph, pin);
-        }
-    }
-
-    return codice;
-}
-
-/* -------------------------------
-   CARICA CAPITOLI (ORIGINALE)
---------------------------------*/
-function caricaCapitoliOriginale() {
-    const dbRef = ref(db);
-
-    get(child(dbRef, "capitoli/arduino")).then(snap => {
-        const blocchi = snap.exists() ? snap.val() : {};
-
-        const sezioni = {
-            selectDich: "Dichiarazioni",
-            selectSetup: "Setup",
-            selectLoop: "Loop",
-            selectFunc: "Funzioni"
-        };
-
-        for (let idSelect in sezioni) {
-            document.getElementById(idSelect).innerHTML =
-                `<option value=''>-- ${sezioni[idSelect]} --</option>`;
-        }
-
-        Object.entries(blocchi).forEach(([id, cap]) => {
-            const opt = document.createElement("option");
-            opt.value = JSON.stringify(cap);
-            opt.textContent = cap.nome;
-
-            document.getElementById("selectDich").appendChild(opt.cloneNode(true));
-            document.getElementById("selectSetup").appendChild(opt.cloneNode(true));
-            document.getElementById("selectLoop").appendChild(opt.cloneNode(true));
-            document.getElementById("selectFunc").appendChild(opt.cloneNode(true));
-        });
-    });
-}
-
-/* -------------------------------
-   AGGIUNGI BLOCCO
---------------------------------*/
-window.aggiungiBlocco = async function(tipo) {
-
-    const modello = document.getElementById("selectModello").value;
-    if (!modello) {
-        alert("Seleziona prima un modello Arduino");
-        return;
-    }
-
-    let cap = null;
-
-    if (tipo === "dich") cap = JSON.parse(selectDich.value || "null");
-    if (tipo === "setup") cap = JSON.parse(selectSetup.value || "null");
-    if (tipo === "loop") cap = JSON.parse(selectLoop.value || "null");
-    if (tipo === "func") cap = JSON.parse(selectFunc.value || "null");
-
-    if (!cap) return;
-
-    let codice = "";
-
-    if (tipo === "dich") codice = cap.dichiarazioni;
-    if (tipo === "setup") codice = cap.setup;
-    if (tipo === "loop") codice = cap.loop;
-    if (tipo === "func") codice = cap.funzioni;
-
-    codice = await processaBlocchi(codice, modello);
-
-    if (tipo === "dich") editorDich.value += "\n" + codice;
-    if (tipo === "setup") editorSetup.value += "\n" + codice;
-    if (tipo === "loop") editorLoop.value += "\n" + codice;
-    if (tipo === "func") editorFunc.value += "\n\n" + codice;
-
-    aggiornaPinDaCodice();
-};
-
-/* -------------------------------
-   NUOVO PROGETTO
---------------------------------*/
-window.nuovoProgetto = function() {
-
-    editorDich.value = "";
-    editorSetup.value = "";
-    editorLoop.value = "";
-    editorFunc.value = "";
-    nomeFile.value = "";
-
-    pinUsati = [];
-
-    localStorage.removeItem("progettoArduinoID");
-
-    alert("Nuovo progetto creato!");
-};
-
-/* -------------------------------
-   SALVA PROGETTO
---------------------------------*/
-window.salvaProgetto = function() {
-
-    const id = localStorage.getItem("progettoArduinoID") || Date.now();
-
-    set(ref(db, "progetti/arduino/" + id), {
-        dichiarazioni: editorDich.value,
-        setup: editorSetup.value,
-        loop: editorLoop.value,
-        funzioni: editorFunc.value,
-        nomeFile: nomeFile.value.trim()
-    });
-
-    localStorage.setItem("progettoArduinoID", id);
-
-    alert("Progetto Arduino salvato!");
-};
-
-/* -------------------------------
-   GENERA FILE .INO
---------------------------------*/
-window.generaFile = function() {
-
-    let nome = nomeFile.value.trim();
-    if (nome === "") nome = "progetto_arduino";
-
-    const finale = `
-// DICHIARAZIONI
-${editorDich.value}
-
-void setup() {
-${editorSetup.value}
-}
-
-void loop() {
-${editorLoop.value}
-}
-
-${editorFunc.value}
-`;
-
-    const blob = new Blob([finale], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = nome + ".ino";
-    document.body.appendChild(a);
-    a.click();
-
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    alert("File .ino scaricato!");
-};
-
-/* -------------------------------
-   CARICA PROGETTO AUTOMATICO
---------------------------------*/
-function caricaProgettoAutomatico() {
-    const id = localStorage.getItem("progettoArduinoID");
-    if (!id) return;
-
-    const dbRef = ref(db);
-
-    get(child(dbRef, "progetti/arduino/" + id)).then(snap => {
-        if (!snap.exists()) return;
-
-        const dati = snap.val();
-
-        editorDich.value = dati.dichiarazioni || "";
-        editorSetup.value = dati.setup || "";
-        editorLoop.value = dati.loop || "";
-        editorFunc.value = dati.funzioni || "";
-        nomeFile.value = dati.nomeFile || "";
-
-        aggiornaPinDaCodice();
-    });
-}
-
-caricaProgettoAutomatico();
-
-</script>
-
-</body>
-</html>
-    
+        
