@@ -311,7 +311,18 @@ const CHIP_TIPI = {
     altro:       { nome: "Altro", desc: "Non classificato", colore: "#444444" }
 };
 
+function caricaCapitoli() {
+    const dbRef = ref(db);
 
+    get(child(dbRef, "capitoli/arduino")).then(snap => {
+        if (!snap.exists()) {
+            window._blocchiArduino = {};
+            return;
+        }
+
+        window._blocchiArduino = snap.val();
+    });
+    }
 /* ============================================================
    APERTURA FILTRO
 ============================================================ */
