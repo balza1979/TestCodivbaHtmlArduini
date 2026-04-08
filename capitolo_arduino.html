@@ -9,7 +9,7 @@
         font-family: Arial;
         margin: 0;
         padding: 40px;
-        background: #00979D; /* Azzurro Arduino */
+        background: #00979D;
         color: black;
         text-align: center;
     }
@@ -85,6 +85,9 @@
 <!-- Categoria -->
 <input id="categoria" placeholder="Categoria (es: Input, Output, Sensori...)">
 
+<!-- TIPO (AGGIUNTO) -->
+<input id="tipo" placeholder="Tipo (in, out, pwm, analog...)">
+
 <!-- DICHIARAZIONI -->
 <textarea id="dichiarazioni" placeholder="// Variabili, costanti, librerie..."></textarea>
 
@@ -155,6 +158,7 @@ window.caricaCapitolo = function() {
 
         document.getElementById("nomeBlocco").value = cap.nome || "";
         document.getElementById("categoria").value = cap.categoria || "";
+        document.getElementById("tipo").value = cap.tipo || "";   // <--- AGGIUNTO
         document.getElementById("dichiarazioni").value = cap.dichiarazioni || "";
         document.getElementById("setup").value = cap.setup || "";
         document.getElementById("loop").value = cap.loop || "";
@@ -166,6 +170,7 @@ window.caricaCapitolo = function() {
 window.salvaCapitolo = function() {
     const nome = document.getElementById("nomeBlocco").value;
     const categoria = document.getElementById("categoria").value;
+    const tipo = document.getElementById("tipo").value;   // <--- AGGIUNTO
     const dichiarazioni = document.getElementById("dichiarazioni").value;
     const setup = document.getElementById("setup").value;
     const loop = document.getElementById("loop").value;
@@ -176,6 +181,7 @@ window.salvaCapitolo = function() {
     set(ref(db, "capitoli/arduino/" + id), {
         nome,
         categoria,
+        tipo,          // <--- AGGIUNTO
         dichiarazioni,
         setup,
         loop,
@@ -202,6 +208,7 @@ window.eliminaCapitolo = function() {
     capitoloCorrente = null;
     document.getElementById("nomeBlocco").value = "";
     document.getElementById("categoria").value = "";
+    document.getElementById("tipo").value = "";   // <--- AGGIUNTO
     document.getElementById("dichiarazioni").value = "";
     document.getElementById("setup").value = "";
     document.getElementById("loop").value = "";
