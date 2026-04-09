@@ -281,6 +281,197 @@ textarea {
 </div>
 
 <script type="module">
+    /* ============================================================
+   CHIP PREDEFINITI (nessuna fantasia, nessuna variante)
+============================================================ */
+const CHIP_TIPI = {
+    variabile: { nome: "Variabile", colore: "#0074D9", desc: "Dichiarazione variabile" },
+    costante: { nome: "Costante", colore: "#2ECC40", desc: "Valore fisso" },
+    array: { nome: "Array", colore: "#FF851B", desc: "Lista di valori" },
+    stringa: { nome: "Stringa", colore: "#B10DC9", desc: "Testo" },
+    booleano: { nome: "Booleano", colore: "#85144b", desc: "Vero/Falso" },
+    libreria: { nome: "Libreria", colore: "#3D9970", desc: "Include libreria" },
+    configurazione: { nome: "Config", colore: "#AAAAAA", desc: "Impostazioni" },
+    altro: { nome: "Altro", colore: "#111111", desc: "Generico" },
+
+    in: { nome: "Input", colore: "#0074D9", desc: "pinMode INPUT" },
+    out: { nome: "Output", colore: "#FF4136", desc: "pinMode OUTPUT" },
+    pwm: { nome: "PWM", colore: "#FF851B", desc: "Output PWM" },
+    analog_in: { nome: "Analog In", colore: "#2ECC40", desc: "Lettura analogica" },
+    analog_out: { nome: "Analog Out", colore: "#B10DC9", desc: "Scrittura analogica" },
+    tempo: { nome: "Tempo", colore: "#AAAAAA", desc: "Delay, millis" },
+    timer: { nome: "Timer", colore: "#85144b", desc: "Gestione timer" },
+    seriale: { nome: "Seriale", colore: "#3D9970", desc: "Serial.begin" },
+    inizializzazione: { nome: "Init", colore: "#111111", desc: "Setup iniziale" },
+
+    sensore: { nome: "Sensore", colore: "#0074D9", desc: "Lettura sensori" },
+    attuatore: { nome: "Attuatore", colore: "#FF4136", desc: "Comando attuatori" },
+    controllo: { nome: "Controllo", colore: "#2ECC40", desc: "If, logica" },
+    debug: { nome: "Debug", colore: "#AAAAAA", desc: "Serial.print" },
+    logica: { nome: "Logica", colore: "#85144b", desc: "Operazioni logiche" },
+
+    funzione: { nome: "Funzione", colore: "#0074D9", desc: "Definizione funzione" },
+    utilita: { nome: "Utilità", colore: "#FF851B", desc: "Blocchi utili" }
+};
+
+/* ============================================================
+   TIPI PER OGNI SEZIONE (semplici da espandere)
+============================================================ */
+const TIPI_SEZIONI = {
+    dich: ["variabile","costante","array","stringa","booleano","libreria","configurazione","altro"],
+    setup: ["in","out","pwm","analog_in","analog_out","tempo","timer","seriale","inizializzazione","altro"],
+    loop: ["sensore","attuatore","controllo","tempo","debug","logica","altro"],
+    func: ["funzione","utilita","sensore","attuatore","controllo","altro"]
+};
+
+/* ============================================================
+   APRI FILTRO (popup ridotto + chip TUTTO)
+============================================================ */
+function apriFiltro(sezione) {
+    const btn = document.getElementById("btn" + capitalize(sezione));
+    if (btn.classList.contains("disabled")) return;
+
+    btn.classList.add("activeClick");
+    setTimeout(() => btn.classList.remove("activeClick"), 300);
+
+    const panel = document.getElementById("panel" + capitalize(sezione));
+    panel.innerHTML = "";
+
+    /* CHIP "TUTTO" */
+    const chipAll = document.createElement("div");
+    chipAll.className = "chip";
+    chipAll.dataset.tipo = "ALL";
+    chipAll.style.background = "#000";
+    chipAll.innerHTML = `
+        <div class="chipTitle">TUTTO</div>
+        <div class="chipDesc">Mostra tutti i blocchi</div>
+    `;
+    chipAll.onclick = () => {
+        panel.querySelectorAll(".chip").forEach(c => c.classList.add("active"));
+    };
+    panel.appendChild(chipAll);
+
+    /* CHIP NORMALI */
+    TIPI_SEZIONI[sezione].forEach(tipo => {
+        const info = CHIP_TIPI[tipo];
+        const div = document.createElement("div");
+        div.className = "chip";
+        div.dataset.tipo = tipo;
+        div.style.background = info.colore;
+        div.innerHTML = `
+            <div class="chipTitle">${info.nome}</div>
+            <div class="chipDesc">${info.desc}</div>
+        `;
+        div.onclick = () => div.classList.toggle("active");
+        panel.appendChild(div);
+    });
+
+    /* BOTTONE APPLICA */
+    const btnApply = document.createElement("button");
+    btnApply.className = "applyFilterBtn";
+    btnApply.textContent = "Applica filtro";
+    btnApply.onclick = () => applicaFiltro(sezione);
+    panel.appendChild(btnApply);
+
+    panel.style.display = "block";
+}
+
+/* ============================================================
+   APPLICA FILTRO
+============================================================ */
+function applicaFiltro(sezione) {
+    const panel = document.getElementById("panel" + capitalize(sezione));
+    const select = document.getElementById("select" + capitalize(sezione));
+
+    const attivi = [...panel.querySelectorAll(".chip.active")]
+        .map(c => c.dataset.tipo)
+        .filter(t => t !== "ALL");
+
+    select.innerHTML = "";
+
+    let trovati = 0;
+    Object.values(window._blocchiArduino || {}).forEach(b => {
+        if (attivi.includes(b.tipo)) {
+            trovati++;
+            const opt = document.createElement("option");
+            opt.value = JSON.stringify(b);
+            opt.textContent = b.nome;
+            select.appendChild(opt);
+        }
+    });
+
+    if (trovati === 0) {
+        showInfo("Nessun blocco trovato");
+        setTimeout(hideInfo, 1500);
+        return;
+    }
+
+    panel.style.display = "none";
+}
+
+/* ============================================================
+   UTILITY
+============================================================ */
+function capitalize(s) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+/* ============================================================
+   RENDI GLOBALI LE FUNZIONI
+============================================================ */
+window.apriFiltro = apriFiltro;
+window.applicaFiltro = applicaFiltro;
+    /* ============================================================
+   MOSTRA CONTENUTO DOPO SCELTA MODELLO
+============================================================ */
+function mostraContenuto() {
+    document.getElementById("contenuto").style.display = "block";
+}
+
+/* ============================================================
+   POPUP INFO (già usato dai filtri)
+============================================================ */
+function showInfo(msg) {
+    document.getElementById("popupInfoText").textContent = msg;
+    document.getElementById("popupInfo").style.display = "flex";
+}
+function hideInfo() {
+    document.getElementById("popupInfo").style.display = "none";
+}
+
+/* ============================================================
+   ABILITA / DISABILITA FILTRI
+============================================================ */
+function setFiltriEnabled(enabled) {
+    ["btnDich","btnSetup","btnLoop","btnFunc"].forEach(id => {
+        const btn = document.getElementById(id);
+        if (enabled) btn.classList.remove("disabled");
+        else btn.classList.add("disabled");
+    });
+}
+
+/* ============================================================
+   LISTENER ANDROID ROBUSTO PER SELECT MODELLO
+============================================================ */
+let ultimoModello = "";
+const sel = document.getElementById("selectModello");
+
+["change","input","click","touchstart","focusout"].forEach(ev => {
+    sel.addEventListener(ev, () => {
+        const modello = sel.value;
+
+        if (!modello) return;
+
+        if (modello !== ultimoModello) {
+            ultimoModello = modello;
+
+            mostraContenuto();   // Mostra tutto
+            setFiltriEnabled(false); // Disabilita filtri finché non carica
+
+            caricaCapitoli();    // BLOCCO 5
+        }
+    });
+});
 /* JS arriverà nei BLOCCO 3, 4 e 5 */
 </script>
 
