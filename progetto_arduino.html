@@ -3,179 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Progetto Arduino 2.0</title>
-
 <style>
-    body {
-        font-family: Arial;
-        margin: 0;
-        padding: 40px;
-        background: #00979D;
-        color: black;
-        text-align: center;
-    }
-
-    h1 {
-        font-size: 80px;
-        margin-bottom: 20px;
-    }
-
-    .homeBtn {
-        width: 90%;
-        padding: 40px;
-        margin: 20px auto 50px auto;
-        font-size: 60px;
-        border-radius: 30px;
-        border: 5px solid black;
-        background: white;
-        color: black;
-        font-weight: bold;
-        display: block;
-    }
-
-    select, textarea, button, input {
-        width: 90%;
-        font-size: 50px;
-        padding: 30px;
-        margin: 20px auto;
-        border-radius: 20px;
-        border: 4px solid black;
-        display: block;
-        box-sizing: border-box;
-    }
-
-    textarea {
-        height: 350px;
-        background: white;
-        color: black;
-    }
-
-    .filterBtn.disabled {
-        opacity: 0.5;
-        pointer-events: none;
-    }
-
-    .filterBtn.activeClick {
-        background: #FFD700 !important;
-        color: black !important;
-    }
-
-    .chipPanel {
-        display: none;
-        width: 90%;
-        margin: 20px auto;
-        padding: 20px;
-        background: white;
-        border-radius: 25px;
-        border: 4px solid black;
-        position: fixed;
-        top: 5%;
-        left: 5%;
-        right: 5%;
-        bottom: 5%;
-        overflow-y: auto;
-        z-index: 9999;
-    }
-
-    .chip {
-        width: 100%;
-        padding: 35px;
-        border-radius: 30px;
-        margin-bottom: 25px;
-        color: white;
-        text-align: left;
-        box-shadow: 0 6px 14px rgba(0,0,0,0.25);
-        cursor: pointer;
-        transition: transform 0.15s ease;
-    }
-
-    .chip.active {
-        outline: 6px solid black;
-    }
-
-    .chipTitle {
-        font-size: 55px;
-        font-weight: bold;
-    }
-
-    .chipDesc {
-        font-size: 40px;
-        opacity: 0.85;
-    }
-
-    .applyFilterBtn {
-        width: 100%;
-        padding: 25px;
-        font-size: 45px;
-        border-radius: 20px;
-        border: 4px solid black;
-        background: #28a745;
-        color: white;
-        font-weight: bold;
-        margin-top: 20px;
-    }
-
-    #popupInfo {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(0,0,0,0.85);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 999999;
-    }
-
-    #popupInfoText {
-        background: black;
-        color: white;
-        padding: 40px;
-        border-radius: 30px;
-        width: 80%;
-        text-align: center;
-        border: 6px solid white;
-        font-size: 55px;
-        font-weight: bold;
-    }
-
-    #popupPin {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(0,0,0,0.6);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 99999;
-    }
-
-    #popupBox {
-        background: white;
-        padding: 40px;
-        border-radius: 30px;
-        width: 80%;
-        text-align: center;
-        border: 6px solid black;
-    }
-
-    #popupBox select {
-        font-size: 55px;
-        padding: 25px;
-        border-radius: 20px;
-        border: 4px solid black;
-        width: 100%;
-    }
-
-    #popupBox button {
-        font-size: 55px;
-        padding: 25px;
-        margin-top: 20px;
-        border-radius: 20px;
-        width: 100%;
-        font-weight: bold;
-    }
-
-    #popupOk { background: #28a745; color: white; }
-    #popupCancel { background: #cc0000; color: white; }
+/* CSS arriverà nel BLOCCO 2 */
 </style>
 </head>
 
@@ -183,9 +12,11 @@
 
 <h1>Progetto Arduino 2.0</h1>
 
+<!-- Pulsanti principali -->
 <button class="homeBtn" onclick="nuovoProgetto()">🆕 Nuovo Progetto</button>
 <button class="homeBtn" onclick="window.location.href='linguaggio.html'">🏠 HOME</button>
 
+<!-- Selezione modello Arduino -->
 <select id="selectModello">
     <option value="">-- Seleziona modello Arduino --</option>
     <option value="uno">Arduino UNO</option>
@@ -193,45 +24,46 @@
     <option value="mega">Arduino Mega</option>
 </select>
 
+<!-- Popup informativo -->
 <div id="popupInfo"><div id="popupInfoText">...</div></div>
 
-<!-- DICHIARAZIONI -->
-<div class="sectionTitle">Dichiarazioni Globali</div>
-<button class="filterBtn disabled" id="btnDich" onclick="apriFiltro('dich')">Filtra</button>
-<div class="chipPanel" id="panelDich"></div>
-<select id="selectDich"></select>
-<textarea id="editorDich"></textarea>
+<!-- CONTENUTO NASCOSTO FINO A SCELTA MODELLO -->
+<div id="contenuto" style="display:none;">
 
-<!-- SETUP -->
-<div class="sectionTitle">Setup()</div>
-<button class="filterBtn disabled" id="btnSetup" onclick="apriFiltro('setup')">Filtra</button>
-<div class="chipPanel" id="panelSetup"></div>
-<select id="selectSetup"></select>
-<textarea id="editorSetup"></textarea>
+    <!-- DICHIARAZIONI -->
+    <div class="sectionTitle">Dichiarazioni Globali</div>
+    <button class="filterBtn disabled" id="btnDich" onclick="apriFiltro('dich')">Filtra</button>
+    <div class="chipPanel" id="panelDich"></div>
+    <select id="selectDich"></select>
+    <textarea id="editorDich"></textarea>
 
-<!-- LOOP -->
-<div class="sectionTitle">Loop()</div>
-<button class="filterBtn disabled" id="btnLoop" onclick="apriFiltro('loop')">Filtra</button>
-<div class="chipPanel" id="panelLoop"></div>
-<select id="selectLoop"></select>
-<textarea id="editorLoop"></textarea>
+    <!-- SETUP -->
+    <div class="sectionTitle">Setup()</div>
+    <button class="filterBtn disabled" id="btnSetup" onclick="apriFiltro('setup')">Filtra</button>
+    <div class="chipPanel" id="panelSetup"></div>
+    <select id="selectSetup"></select>
+    <textarea id="editorSetup"></textarea>
 
-<!-- FUNZIONI -->
-<div class="sectionTitle">Funzioni Extra</div>
-<button class="filterBtn disabled" id="btnFunc" onclick="apriFiltro('func')">Filtra</button>
-<div class="chipPanel" id="panelFunc"></div>
-<select id="selectFunc"></select>
-<textarea id="editorFunc"></textarea>
+    <!-- LOOP -->
+    <div class="sectionTitle">Loop()</div>
+    <button class="filterBtn disabled" id="btnLoop" onclick="apriFiltro('loop')">Filtra</button>
+    <div class="chipPanel" id="panelLoop"></div>
+    <select id="selectLoop"></select>
+    <textarea id="editorLoop"></textarea>
 
-<input id="nomeFile" placeholder="Nome file (senza .ino)">
+    <!-- FUNZIONI -->
+    <div class="sectionTitle">Funzioni Extra</div>
+    <button class="filterBtn disabled" id="btnFunc" onclick="apriFiltro('func')">Filtra</button>
+    <div class="chipPanel" id="panelFunc"></div>
+    <select id="selectFunc"></select>
+    <textarea id="editorFunc"></textarea>
 
-<button class="homeBtn" onclick="salvaProgetto()">💾 Salva Progetto</button>
-<button class="homeBtn" onclick="generaFile()">⚙️ Genera File .ino</button>
+</div>
 
-<!-- POPUP PIN -->
+<!-- Popup PIN -->
 <div id="popupPin">
     <div id="popupBox">
-        <div id="popupTitle" style="font-size:65px; font-weight:bold; margin-bottom:20px;">Seleziona PIN</div>
+        <div id="popupTitle">Seleziona PIN</div>
         <select id="popupSelectPin"></select>
         <button id="popupOk">OK</button>
         <button id="popupCancel">Annulla</button>
@@ -239,203 +71,8 @@
 </div>
 
 <script type="module">
-
-/* ============================================================
-   FIREBASE
-============================================================ */
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyB1_lem0tKd5SQeuD7xs8Dj3Ey77MUUhDY",
-    authDomain: "programmazione-4d38e.firebaseapp.com",
-    databaseURL: "https://programmazione-4d38e-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "programmazione-4d38e",
-    storageBucket: "programmazione-4d38e.appspot.com",
-    messagingSenderId: "390860890072",
-    appId: "1:390860890072:web:5199a3f3c80f5b95a5dcad"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-/* ============================================================
-   CHIP PREDEFINITI (SCELTA B)
-============================================================ */
-const CHIP_TIPI = {
-    variabile: { nome: "Variabile", colore: "#0074D9", desc: "Dichiarazione variabile" },
-    costante: { nome: "Costante", colore: "#2ECC40", desc: "Valore fisso" },
-    array: { nome: "Array", colore: "#FF851B", desc: "Lista di valori" },
-    stringa: { nome: "Stringa", colore: "#B10DC9", desc: "Testo" },
-    booleano: { nome: "Booleano", colore: "#85144b", desc: "Vero/Falso" },
-    libreria: { nome: "Libreria", colore: "#3D9970", desc: "Include libreria" },
-    configurazione: { nome: "Config", colore: "#AAAAAA", desc: "Impostazioni" },
-    altro: { nome: "Altro", colore: "#111111", desc: "Generico" },
-
-    in: { nome: "Input", colore: "#0074D9", desc: "pinMode INPUT" },
-    out: { nome: "Output", colore: "#FF4136", desc: "pinMode OUTPUT" },
-    pwm: { nome: "PWM", colore: "#FF851B", desc: "Output PWM" },
-    analog_in: { nome: "Analog In", colore: "#2ECC40", desc: "Lettura analogica" },
-    analog_out: { nome: "Analog Out", colore: "#B10DC9", desc: "Scrittura analogica" },
-    tempo: { nome: "Tempo", colore: "#AAAAAA", desc: "Delay, millis" },
-    timer: { nome: "Timer", colore: "#85144b", desc: "Gestione timer" },
-    seriale: { nome: "Seriale", colore: "#3D9970", desc: "Serial.begin" },
-    inizializzazione: { nome: "Init", colore: "#111111", desc: "Setup iniziale" },
-
-    sensore: { nome: "Sensore", colore: "#0074D9", desc: "Lettura sensori" },
-    attuatore: { nome: "Attuatore", colore: "#FF4136", desc: "Comando attuatori" },
-    controllo: { nome: "Controllo", colore: "#2ECC40", desc: "If, logica" },
-    debug: { nome: "Debug", colore: "#AAAAAA", desc: "Serial.print" },
-    logica: { nome: "Logica", colore: "#85144b", desc: "Operazioni logiche" },
-
-    funzione: { nome: "Funzione", colore: "#0074D9", desc: "Definizione funzione" },
-    utilita: { nome: "Utilità", colore: "#FF851B", desc: "Blocchi utili" }
-};
-
-const TIPI_SEZIONI = {
-    dich: ["variabile","costante","array","stringa","booleano","libreria","configurazione","altro"],
-    setup: ["in","out","pwm","analog_in","analog_out","tempo","timer","seriale","inizializzazione","altro"],
-    loop: ["sensore","attuatore","controllo","tempo","debug","logica","altro"],
-    func: ["funzione","utilita","sensore","attuatore","controllo","altro"]
-};
-
-/* ============================================================
-   POPUP INFO
-============================================================ */
-function showInfo(msg) {
-    document.getElementById("popupInfoText").textContent = msg;
-    document.getElementById("popupInfo").style.display = "flex";
-}
-function hideInfo() {
-    document.getElementById("popupInfo").style.display = "none";
-}
-
-/* ============================================================
-   CARICA CAPITOLI DA FIREBASE
-============================================================ */
-async function caricaCapitoli() {
-    showInfo("Caricamento dati...");
-    try {
-        const snap = await get(child(ref(db), "capitoli/arduino"));
-        window._blocchiArduino = snap.exists() ? snap.val() : {};
-        hideInfo();
-        setFiltriEnabled(true);
-    } catch (e) {
-        showInfo("Errore caricamento dati");
-        console.error(e);
-    }
-}
-
-/* ============================================================
-   ABILITA / DISABILITA FILTRI
-============================================================ */
-function setFiltriEnabled(enabled) {
-    ["btnDich","btnSetup","btnLoop","btnFunc"].forEach(id => {
-        const btn = document.getElementById(id);
-        if (enabled) btn.classList.remove("disabled");
-        else btn.classList.add("disabled");
-    });
-}
-
-/* ============================================================
-   LISTENER ANDROID ROBUSTO
-============================================================ */
-let ultimoModello = "";
-const sel = document.getElementById("selectModello");
-
-["change","input","click","touchstart","focusout"].forEach(ev => {
-    sel.addEventListener(ev, () => {
-        const modello = sel.value;
-        if (modello && modello !== ultimoModello) {
-            ultimoModello = modello;
-            caricaCapitoli();
-        }
-    });
-});
-
-/* ============================================================
-   APRI FILTRO
-============================================================ */
-function apriFiltro(sezione) {
-    const btn = document.getElementById("btn" + capitalize(sezione));
-    if (btn.classList.contains("disabled")) return;
-
-    btn.classList.add("activeClick");
-    setTimeout(() => btn.classList.remove("activeClick"), 300);
-
-    const panel = document.getElementById("panel" + capitalize(sezione));
-    panel.innerHTML = "";
-
-    TIPI_SEZIONI[sezione].forEach(tipo => {
-        const info = CHIP_TIPI[tipo];
-        const div = document.createElement("div");
-        div.className = "chip";
-        div.dataset.tipo = tipo;
-        div.style.background = info.colore;
-        div.innerHTML = `
-            <div class="chipTitle">${info.nome}</div>
-            <div class="chipDesc">${info.desc}</div>
-        `;
-        div.onclick = () => div.classList.toggle("active");
-        panel.appendChild(div);
-    });
-
-    const btnApply = document.createElement("button");
-    btnApply.className = "applyFilterBtn";
-    btnApply.textContent = "Applica filtro";
-    btnApply.onclick = () => applicaFiltro(sezione);
-    panel.appendChild(btnApply);
-
-    panel.style.display = "block";
-}
-
-/* ============================================================
-   APPLICA FILTRO
-============================================================ */
-function applicaFiltro(sezione) {
-    const panel = document.getElementById("panel" + capitalize(sezione));
-    const select = document.getElementById("select" + capitalize(sezione));
-
-    const attivi = [...panel.querySelectorAll(".chip.active")].map(c => c.dataset.tipo);
-
-    select.innerHTML = "";
-
-    let trovati = 0;
-    Object.values(window._blocchiArduino).forEach(b => {
-        if (attivi.includes(b.tipo)) {
-            trovati++;
-            const opt = document.createElement("option");
-            opt.value = JSON.stringify(b);
-            opt.textContent = b.nome;
-            select.appendChild(opt);
-        }
-    });
-
-    if (trovati === 0) {
-        showInfo("Nessun blocco trovato");
-        setTimeout(hideInfo, 1500);
-        return;
-    }
-
-    panel.style.display = "none";
-}
-
-/* ============================================================
-   UTILITY
-============================================================ */
-function capitalize(s) {
-    return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
-/* ============================================================
-   FUNZIONI GLOBALI (OBBLIGATORIE)
-============================================================ */
-window.apriFiltro = apriFiltro;
-window.applicaFiltro = applicaFiltro;
-window.nuovoProgetto = () => alert("Nuovo progetto (da implementare)");
-window.salvaProgetto = () => alert("Salvataggio progetto (da implementare)");
-window.generaFile = () => alert("Generazione file .ino (da implementare)");
-
+/* JS arriverà nei BLOCCO 3, 4 e 5 */
 </script>
+
 </body>
 </html>
