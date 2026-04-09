@@ -67,13 +67,13 @@
         font-weight: bold;
     }
 
-    /* FILTRA: stato disattivato */
+    /* FILTRA disattivato */
     .filterBtn.disabled {
         opacity: 0.5;
         pointer-events: none;
     }
 
-    /* FILTRA: feedback al click */
+    /* FILTRA feedback click */
     .filterBtn.activeClick {
         background: #FFD700 !important;
         color: black !important;
@@ -267,7 +267,8 @@
     </div>
 </div>
 
-<script type="module">
+<!-- FINE PARTE 1 -->
+    <script type="module">
 
 /* ============================================================
    IMPORT FIREBASE
@@ -337,12 +338,24 @@ async function caricaCapitoli() {
     }
 }
 
-/* Carica all’avvio */
-await caricaCapitoli();
+/* ============================================================
+   LISTENER ROBUSTO PER ANDROID (Dodge V30 / Huawei T5)
+============================================================ */
+let ultimoModello = "";
 
-/* Ricarica quando cambia modello */
-document.getElementById("selectModello").addEventListener("change", async () => {
-    await caricaCapitoli();
+function modelloSelezionato() {
+    const modello = document.getElementById("selectModello").value;
+
+    if (modello && modello !== ultimoModello) {
+        ultimoModello = modello;
+        caricaCapitoli();
+    }
+}
+
+const sel = document.getElementById("selectModello");
+
+["change", "input", "click", "touchstart", "focusout"].forEach(ev => {
+    sel.addEventListener(ev, modelloSelezionato);
 });
 
 /* ============================================================
@@ -438,6 +451,6 @@ function capitalize(s) {
 ============================================================ */
 
 </script>
-
 </body>
 </html>
+    
