@@ -330,6 +330,13 @@ const TIPI_SEZIONI = {
    APRI FILTRO (popup ridotto + chip TUTTO)
 ============================================================ */
 function apriFiltro(sezione) {
+
+/* ============================================================
+   APPLICA FILTRO
+============================================================ */
+function applicaFiltro(sezione) {
+    const panel = document.getElementById("panel" + capitalize(sezione));
+    const select = documfunction apriFiltro(sezione) {
     const btn = document.getElementById("btn" + capitalize(sezione));
     if (btn.classList.contains("disabled")) return;
 
@@ -369,29 +376,24 @@ function apriFiltro(sezione) {
     });
 
     /* BOTTONE APPLICA */
-const btnApply = document.createElement("button");
-btnApply.className = "applyFilterBtn";
-btnApply.textContent = "Applica filtro";
-btnApply.onclick = () => applicaFiltro(sezione);
-panel.appendChild(btnApply);
+    const btnApply = document.createElement("button");
+    btnApply.className = "applyFilterBtn";
+    btnApply.textContent = "Applica filtro";
+    btnApply.onclick = () => applicaFiltro(sezione);
+    panel.appendChild(btnApply);
 
-/* BOTTONE ESCI */
-const btnExit = document.createElement("button");
-btnExit.className = "applyFilterBtn";
-btnExit.style.background = "#cc0000";
-btnExit.style.color = "white";
-btnExit.textContent = "Esci";
-btnExit.onclick = () => panel.style.display = "none";
-panel.appendChild(btnExit);
+    /* BOTTONE ESCI */
+    const btnExit = document.createElement("button");
+    btnExit.className = "applyFilterBtn";
+    btnExit.style.background = "#cc0000";
+    btnExit.style.color = "white";
+    btnExit.textContent = "Esci";
+    btnExit.onclick = () => panel.style.display = "none";
+    panel.appendChild(btnExit);
 
-panel.style.display = "block";
-
-/* ============================================================
-   APPLICA FILTRO
-============================================================ */
-function applicaFiltro(sezione) {
-    const panel = document.getElementById("panel" + capitalize(sezione));
-    const select = document.getElementById("select" + capitalize(sezione));
+    /* MOSTRA IL PANNELLO */
+    panel.style.display = "block";
+    }ent.getElementById("select" + capitalize(sezione));
 
     const attivi = [...panel.querySelectorAll(".chip.active")]
         .map(c => c.dataset.tipo)
