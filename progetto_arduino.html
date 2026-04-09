@@ -4,6 +4,216 @@
 <meta charset="UTF-8">
 <title>Progetto Arduino 2.0</title>
 <style>
+    /* ============================
+   STILE GENERALE
+============================ */
+body {
+    font-family: Arial;
+    margin: 0;
+    padding: 40px;
+    background: #00979D;
+    color: black;
+    text-align: center;
+}
+
+h1 {
+    font-size: 80px;
+    margin-bottom: 20px;
+}
+
+/* ============================
+   PULSANTI PRINCIPALI
+============================ */
+.homeBtn {
+    width: 90%;
+    padding: 40px;
+    margin: 20px auto 50px auto;
+    font-size: 60px;
+    border-radius: 30px;
+    border: 5px solid black;
+    background: white;
+    color: black;
+    font-weight: bold;
+    display: block;
+}
+
+/* ============================
+   INPUT, SELECT, TEXTAREA
+============================ */
+select, textarea, button, input {
+    width: 90%;
+    font-size: 50px;
+    padding: 30px;
+    margin: 20px auto;
+    border-radius: 20px;
+    border: 4px solid black;
+    display: block;
+    box-sizing: border-box;
+}
+
+textarea {
+    height: 350px;
+    background: white;
+    color: black;
+}
+
+/* ============================
+   SEZIONI
+============================ */
+.sectionTitle {
+    font-size: 60px;
+    font-weight: bold;
+    margin-top: 60px;
+    margin-bottom: 20px;
+}
+
+/* ============================
+   FILTRA BUTTON
+============================ */
+.filterBtn.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.filterBtn.activeClick {
+    background: #FFD700 !important;
+    color: black !important;
+}
+
+/* ============================
+   POPUP FILTRI (RIDOTTO)
+============================ */
+.chipPanel {
+    display: none;
+    width: 85%;
+    margin: 0 auto;
+    padding: 20px;
+    background: white;
+    border-radius: 25px;
+    border: 4px solid black;
+
+    position: fixed;
+    top: 12%;
+    left: 7.5%;
+    right: 7.5%;
+    bottom: 12%;
+
+    overflow-y: auto;
+    z-index: 9999;
+}
+
+/* ============================
+   CHIP
+============================ */
+.chip {
+    width: 100%;
+    padding: 28px;
+    border-radius: 25px;
+    margin-bottom: 20px;
+    color: white;
+    text-align: left;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.chip.active {
+    outline: 6px solid black;
+}
+
+.chipTitle {
+    font-size: 48px;
+    font-weight: bold;
+}
+
+.chipDesc {
+    font-size: 36px;
+    opacity: 0.85;
+}
+
+/* ============================
+   BOTTONE "APPLICA FILTRO"
+============================ */
+.applyFilterBtn {
+    width: 100%;
+    padding: 25px;
+    font-size: 45px;
+    border-radius: 20px;
+    border: 4px solid black;
+    background: #28a745;
+    color: white;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+/* ============================
+   POPUP INFO (nero)
+============================ */
+#popupInfo {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+}
+
+#popupInfoText {
+    background: black;
+    color: white;
+    padding: 40px;
+    border-radius: 30px;
+    width: 80%;
+    text-align: center;
+    border: 6px solid white;
+    font-size: 55px;
+    font-weight: bold;
+}
+
+/* ============================
+   POPUP PIN
+============================ */
+#popupPin {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+}
+
+#popupBox {
+    background: white;
+    padding: 40px;
+    border-radius: 30px;
+    width: 80%;
+    text-align: center;
+    border: 6px solid black;
+}
+
+#popupBox select {
+    font-size: 55px;
+    padding: 25px;
+    border-radius: 20px;
+    border: 4px solid black;
+    width: 100%;
+}
+
+#popupBox button {
+    font-size: 55px;
+    padding: 25px;
+    margin-top: 20px;
+    border-radius: 20px;
+    width: 100%;
+    font-weight: bold;
+}
+
+#popupOk { background: #28a745; color: white; }
+#popupCancel { background: #cc0000; color: white; }
 /* CSS arriverà nel BLOCCO 2 */
 </style>
 </head>
