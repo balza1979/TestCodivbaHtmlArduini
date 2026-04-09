@@ -99,14 +99,15 @@ textarea {
     bottom: 12%;
 
     overflow-y: auto;
+    overflow-x: hidden; /* ← STOP SCROLL LATERALE */
     z-index: 9999;
 }
 
-/* ============================
-   CHIP
-============================ */
 .chip {
-    width: 100%;
+    width: calc(100% - 20px); /* ← NON ESCE PIÙ */
+    margin-left: 10px;
+    margin-right: 10px;
+
     padding: 28px;
     border-radius: 25px;
     margin-bottom: 20px;
