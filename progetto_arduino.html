@@ -136,15 +136,16 @@ textarea {
    BOTTONE "APPLICA FILTRO"
 ============================ */
 .applyFilterBtn {
-    width: 100%;
-    padding: 25px;
+    width: 60%;
+    margin: 30px auto 10px auto;
+    padding: 20px;
     font-size: 45px;
     border-radius: 20px;
     border: 4px solid black;
-    background: #28a745;
-    color: white;
+    background: #FFD700; /* GIALLO */
+    color: black;
     font-weight: bold;
-    margin-top: 20px;
+    display: block;
 }
 
 /* ============================
@@ -368,14 +369,22 @@ function apriFiltro(sezione) {
     });
 
     /* BOTTONE APPLICA */
-    const btnApply = document.createElement("button");
-    btnApply.className = "applyFilterBtn";
-    btnApply.textContent = "Applica filtro";
-    btnApply.onclick = () => applicaFiltro(sezione);
-    panel.appendChild(btnApply);
+const btnApply = document.createElement("button");
+btnApply.className = "applyFilterBtn";
+btnApply.textContent = "Applica filtro";
+btnApply.onclick = () => applicaFiltro(sezione);
+panel.appendChild(btnApply);
 
-    panel.style.display = "block";
-}
+/* BOTTONE ESCI */
+const btnExit = document.createElement("button");
+btnExit.className = "applyFilterBtn";
+btnExit.style.background = "#cc0000";
+btnExit.style.color = "white";
+btnExit.textContent = "Esci";
+btnExit.onclick = () => panel.style.display = "none";
+panel.appendChild(btnExit);
+
+panel.style.display = "block";
 
 /* ============================================================
    APPLICA FILTRO
