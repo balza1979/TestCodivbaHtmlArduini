@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>Progetto Arduino</title>
+<title>Progetto Arduino 2.0</title>
 
 <style>
     body {
@@ -49,37 +49,16 @@
         color: black;
     }
 
-    .addBtn {
-        background: white;
-        color: black;
-        font-weight: bold;
-    }
-
-    .saveBtn {
-        background: #28a745;
-        color: white;
-        font-weight: bold;
-    }
-
-    .generateBtn {
-        background: #000;
-        color: white;
-        font-weight: bold;
-    }
-
-    /* FILTRA disattivato */
     .filterBtn.disabled {
         opacity: 0.5;
         pointer-events: none;
     }
 
-    /* FILTRA feedback click */
     .filterBtn.activeClick {
         background: #FFD700 !important;
         color: black !important;
     }
 
-    /* CHIP PANEL */
     .chipPanel {
         display: none;
         width: 90%;
@@ -88,7 +67,12 @@
         background: white;
         border-radius: 25px;
         border: 4px solid black;
-        position: relative;
+        position: fixed;
+        top: 5%;
+        left: 5%;
+        right: 5%;
+        bottom: 5%;
+        overflow-y: auto;
         z-index: 9999;
     }
 
@@ -104,12 +88,8 @@
         transition: transform 0.15s ease;
     }
 
-    .chip:hover {
-        transform: scale(1.02);
-    }
-
     .chip.active {
-        outline: 6px solid white;
+        outline: 6px solid black;
     }
 
     .chipTitle {
@@ -120,10 +100,6 @@
     .chipDesc {
         font-size: 40px;
         opacity: 0.85;
-    }
-
-    .selectBlocchi {
-        display: none;
     }
 
     .applyFilterBtn {
@@ -138,7 +114,6 @@
         margin-top: 20px;
     }
 
-    /* POPUP INFO (nero semi-trasparente) */
     #popupInfo {
         position: fixed;
         top: 0; left: 0;
@@ -162,7 +137,6 @@
         font-weight: bold;
     }
 
-    /* POPUP PIN */
     #popupPin {
         position: fixed;
         top: 0; left: 0;
@@ -219,43 +193,40 @@
     <option value="mega">Arduino Mega</option>
 </select>
 
-<!-- POPUP INFO -->
-<div id="popupInfo">
-    <div id="popupInfoText">...</div>
-</div>
+<div id="popupInfo"><div id="popupInfoText">...</div></div>
 
 <!-- DICHIARAZIONI -->
 <div class="sectionTitle">Dichiarazioni Globali</div>
 <button class="filterBtn disabled" id="btnDich" onclick="apriFiltro('dich')">Filtra</button>
 <div class="chipPanel" id="panelDich"></div>
-<select id="selectDich" class="selectBlocchi"></select>
+<select id="selectDich"></select>
 <textarea id="editorDich"></textarea>
 
 <!-- SETUP -->
 <div class="sectionTitle">Setup()</div>
 <button class="filterBtn disabled" id="btnSetup" onclick="apriFiltro('setup')">Filtra</button>
 <div class="chipPanel" id="panelSetup"></div>
-<select id="selectSetup" class="selectBlocchi"></select>
+<select id="selectSetup"></select>
 <textarea id="editorSetup"></textarea>
 
 <!-- LOOP -->
 <div class="sectionTitle">Loop()</div>
 <button class="filterBtn disabled" id="btnLoop" onclick="apriFiltro('loop')">Filtra</button>
 <div class="chipPanel" id="panelLoop"></div>
-<select id="selectLoop" class="selectBlocchi"></select>
+<select id="selectLoop"></select>
 <textarea id="editorLoop"></textarea>
 
 <!-- FUNZIONI -->
 <div class="sectionTitle">Funzioni Extra</div>
 <button class="filterBtn disabled" id="btnFunc" onclick="apriFiltro('func')">Filtra</button>
 <div class="chipPanel" id="panelFunc"></div>
-<select id="selectFunc" class="selectBlocchi"></select>
+<select id="selectFunc"></select>
 <textarea id="editorFunc"></textarea>
 
 <input id="nomeFile" placeholder="Nome file (senza .ino)">
 
-<button class="saveBtn" onclick="salvaProgetto()">💾 Salva Progetto</button>
-<button class="generateBtn" onclick="generaFile()">⚙️ Genera File .ino</button>
+<button class="homeBtn" onclick="salvaProgetto()">💾 Salva Progetto</button>
+<button class="homeBtn" onclick="generaFile()">⚙️ Genera File .ino</button>
 
 <!-- POPUP PIN -->
 <div id="popupPin">
@@ -270,7 +241,7 @@
 <script type="module">
 
 /* ============================================================
-   IMPORT FIREBASE
+   FIREBASE
 ============================================================ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -289,48 +260,66 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 /* ============================================================
+   CHIP PREDEFINITI (SCELTA B)
+============================================================ */
+const CHIP_TIPI = {
+    variabile: { nome: "Variabile", colore: "#0074D9", desc: "Dichiarazione variabile" },
+    costante: { nome: "Costante", colore: "#2ECC40", desc: "Valore fisso" },
+    array: { nome: "Array", colore: "#FF851B", desc: "Lista di valori" },
+    stringa: { nome: "Stringa", colore: "#B10DC9", desc: "Testo" },
+    booleano: { nome: "Booleano", colore: "#85144b", desc: "Vero/Falso" },
+    libreria: { nome: "Libreria", colore: "#3D9970", desc: "Include libreria" },
+    configurazione: { nome: "Config", colore: "#AAAAAA", desc: "Impostazioni" },
+    altro: { nome: "Altro", colore: "#111111", desc: "Generico" },
+
+    in: { nome: "Input", colore: "#0074D9", desc: "pinMode INPUT" },
+    out: { nome: "Output", colore: "#FF4136", desc: "pinMode OUTPUT" },
+    pwm: { nome: "PWM", colore: "#FF851B", desc: "Output PWM" },
+    analog_in: { nome: "Analog In", colore: "#2ECC40", desc: "Lettura analogica" },
+    analog_out: { nome: "Analog Out", colore: "#B10DC9", desc: "Scrittura analogica" },
+    tempo: { nome: "Tempo", colore: "#AAAAAA", desc: "Delay, millis" },
+    timer: { nome: "Timer", colore: "#85144b", desc: "Gestione timer" },
+    seriale: { nome: "Seriale", colore: "#3D9970", desc: "Serial.begin" },
+    inizializzazione: { nome: "Init", colore: "#111111", desc: "Setup iniziale" },
+
+    sensore: { nome: "Sensore", colore: "#0074D9", desc: "Lettura sensori" },
+    attuatore: { nome: "Attuatore", colore: "#FF4136", desc: "Comando attuatori" },
+    controllo: { nome: "Controllo", colore: "#2ECC40", desc: "If, logica" },
+    debug: { nome: "Debug", colore: "#AAAAAA", desc: "Serial.print" },
+    logica: { nome: "Logica", colore: "#85144b", desc: "Operazioni logiche" },
+
+    funzione: { nome: "Funzione", colore: "#0074D9", desc: "Definizione funzione" },
+    utilita: { nome: "Utilità", colore: "#FF851B", desc: "Blocchi utili" }
+};
+
+const TIPI_SEZIONI = {
+    dich: ["variabile","costante","array","stringa","booleano","libreria","configurazione","altro"],
+    setup: ["in","out","pwm","analog_in","analog_out","tempo","timer","seriale","inizializzazione","altro"],
+    loop: ["sensore","attuatore","controllo","tempo","debug","logica","altro"],
+    func: ["funzione","utilita","sensore","attuatore","controllo","altro"]
+};
+
+/* ============================================================
    POPUP INFO
 ============================================================ */
 function showInfo(msg) {
     document.getElementById("popupInfoText").textContent = msg;
     document.getElementById("popupInfo").style.display = "flex";
 }
-
 function hideInfo() {
     document.getElementById("popupInfo").style.display = "none";
 }
 
 /* ============================================================
-   ABILITA / DISABILITA FILTRA
-============================================================ */
-function setFiltriEnabled(enabled) {
-    const ids = ["btnDich","btnSetup","btnLoop","btnFunc"];
-    ids.forEach(id => {
-        const btn = document.getElementById(id);
-        if (enabled) {
-            btn.classList.remove("disabled");
-        } else {
-            btn.classList.add("disabled");
-        }
-    });
-}
-
-/* ============================================================
-   CARICA CAPITOLI (ASYNC + POPUP)
+   CARICA CAPITOLI DA FIREBASE
 ============================================================ */
 async function caricaCapitoli() {
-    setFiltriEnabled(false);
     showInfo("Caricamento dati...");
-
     try {
-        const dbRef = ref(db);
-        const snap = await get(child(dbRef, "capitoli/arduino"));
-
+        const snap = await get(child(ref(db), "capitoli/arduino"));
         window._blocchiArduino = snap.exists() ? snap.val() : {};
-
         hideInfo();
         setFiltriEnabled(true);
-
     } catch (e) {
         showInfo("Errore caricamento dati");
         console.error(e);
@@ -338,37 +327,38 @@ async function caricaCapitoli() {
 }
 
 /* ============================================================
-   LISTENER ROBUSTO PER ANDROID
+   ABILITA / DISABILITA FILTRI
 ============================================================ */
-let ultimoModello = "";
-
-function modelloSelezionato() {
-    const modello = document.getElementById("selectModello").value;
-
-    if (modello && modello !== ultimoModello) {
-        ultimoModello = modello;
-        caricaCapitoli();
-    }
+function setFiltriEnabled(enabled) {
+    ["btnDich","btnSetup","btnLoop","btnFunc"].forEach(id => {
+        const btn = document.getElementById(id);
+        if (enabled) btn.classList.remove("disabled");
+        else btn.classList.add("disabled");
+    });
 }
 
+/* ============================================================
+   LISTENER ANDROID ROBUSTO
+============================================================ */
+let ultimoModello = "";
 const sel = document.getElementById("selectModello");
 
-["change", "input", "click", "touchstart", "focusout"].forEach(ev => {
-    sel.addEventListener(ev, modelloSelezionato);
+["change","input","click","touchstart","focusout"].forEach(ev => {
+    sel.addEventListener(ev, () => {
+        const modello = sel.value;
+        if (modello && modello !== ultimoModello) {
+            ultimoModello = modello;
+            caricaCapitoli();
+        }
+    });
 });
 
 /* ============================================================
-   FILTRI
+   APRI FILTRO
 ============================================================ */
 function apriFiltro(sezione) {
-
     const btn = document.getElementById("btn" + capitalize(sezione));
-
-    if (btn.classList.contains("disabled")) {
-        showInfo("Dati non pronti");
-        setTimeout(hideInfo, 1500);
-        return;
-    }
+    if (btn.classList.contains("disabled")) return;
 
     btn.classList.add("activeClick");
     setTimeout(() => btn.classList.remove("activeClick"), 300);
@@ -376,13 +366,7 @@ function apriFiltro(sezione) {
     const panel = document.getElementById("panel" + capitalize(sezione));
     panel.innerHTML = "";
 
-    let tipi = [];
-    if (sezione === "dich") tipi = ["variabile","costante","array","stringa","booleano","libreria","configurazione","altro"];
-    if (sezione === "setup") tipi = ["in","out","pwm","analog_in","analog_out","tempo","timer","seriale","inizializzazione","altro"];
-    if (sezione === "loop") tipi = ["sensore","attuatore","controllo","tempo","debug","logica","altro"];
-    if (sezione === "func") tipi = ["funzione","utilita","sensore","attuatore","controllo","altro"];
-
-    tipi.forEach(tipo => {
+    TIPI_SEZIONI[sezione].forEach(tipo => {
         const info = CHIP_TIPI[tipo];
         const div = document.createElement("div");
         div.className = "chip";
@@ -403,9 +387,11 @@ function apriFiltro(sezione) {
     panel.appendChild(btnApply);
 
     panel.style.display = "block";
-    document.getElementById("select" + capitalize(sezione)).style.display = "none";
 }
 
+/* ============================================================
+   APPLICA FILTRO
+============================================================ */
 function applicaFiltro(sezione) {
     const panel = document.getElementById("panel" + capitalize(sezione));
     const select = document.getElementById("select" + capitalize(sezione));
@@ -415,7 +401,6 @@ function applicaFiltro(sezione) {
     select.innerHTML = "";
 
     let trovati = 0;
-
     Object.values(window._blocchiArduino).forEach(b => {
         if (attivi.includes(b.tipo)) {
             trovati++;
@@ -433,7 +418,6 @@ function applicaFiltro(sezione) {
     }
 
     panel.style.display = "none";
-    select.style.display = "block";
 }
 
 /* ============================================================
@@ -444,14 +428,13 @@ function capitalize(s) {
 }
 
 /* ============================================================
-   RENDI GLOBALI LE FUNZIONI (PATCH FONDAMENTALE)
+   FUNZIONI GLOBALI (OBBLIGATORIE)
 ============================================================ */
 window.apriFiltro = apriFiltro;
 window.applicaFiltro = applicaFiltro;
-window.aggiungiBlocco = aggiungiBlocco;
-window.nuovoProgetto = nuovoProgetto;
-window.salvaProgetto = salvaProgetto;
-window.generaFile = generaFile;
+window.nuovoProgetto = () => alert("Nuovo progetto (da implementare)");
+window.salvaProgetto = () => alert("Salvataggio progetto (da implementare)");
+window.generaFile = () => alert("Generazione file .ino (da implementare)");
 
 </script>
 </body>
