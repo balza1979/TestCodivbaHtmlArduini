@@ -449,7 +449,13 @@ function capitalize(s) {
    TUTTO IL RESTO DEL TUO CODICE (PIN, POPUP PIN, AGGIUNGI BLOCCHI,
    SALVA, GENERA FILE, CARICA PROGETTO) RIMANE IDENTICO
 ============================================================ */
-
+// Rendi globali le funzioni chiamate da HTML
+window.apriFiltro = apriFiltro;
+window.applicaFiltro = applicaFiltro;
+window.aggiungiBlocco = aggiungiBlocco;
+window.nuovoProgetto = nuovoProgetto;
+window.salvaProgetto = salvaProgetto;
+window.generaFile = generaFile;
 </script>
 </body>
 </html>
