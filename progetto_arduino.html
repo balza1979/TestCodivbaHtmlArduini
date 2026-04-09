@@ -267,8 +267,7 @@
     </div>
 </div>
 
-<!-- FINE PARTE 1 -->
-    <script type="module">
+<script type="module">
 
 /* ============================================================
    IMPORT FIREBASE
@@ -339,7 +338,7 @@ async function caricaCapitoli() {
 }
 
 /* ============================================================
-   LISTENER ROBUSTO PER ANDROID (Dodge V30 / Huawei T5)
+   LISTENER ROBUSTO PER ANDROID
 ============================================================ */
 let ultimoModello = "";
 
@@ -371,7 +370,6 @@ function apriFiltro(sezione) {
         return;
     }
 
-    /* feedback click */
     btn.classList.add("activeClick");
     setTimeout(() => btn.classList.remove("activeClick"), 300);
 
@@ -446,17 +444,15 @@ function capitalize(s) {
 }
 
 /* ============================================================
-   TUTTO IL RESTO DEL TUO CODICE (PIN, POPUP PIN, AGGIUNGI BLOCCHI,
-   SALVA, GENERA FILE, CARICA PROGETTO) RIMANE IDENTICO
+   RENDI GLOBALI LE FUNZIONI (PATCH FONDAMENTALE)
 ============================================================ */
-// Rendi globali le funzioni chiamate da HTML
 window.apriFiltro = apriFiltro;
 window.applicaFiltro = applicaFiltro;
 window.aggiungiBlocco = aggiungiBlocco;
 window.nuovoProgetto = nuovoProgetto;
 window.salvaProgetto = salvaProgetto;
 window.generaFile = generaFile;
+
 </script>
 </body>
 </html>
-    
