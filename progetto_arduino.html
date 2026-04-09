@@ -282,7 +282,22 @@ try{
 const snap=await get(child(ref(db),"capitoli/arduino"));
 window._blocchiArduino=snap.exists()?snap.val():{};
 hideInfo();
-setFiltriEnabled(true);
+function setFiltriEnabled(enabled){
+    const ids = ["btnDich","btnSetup","btnLoop","btnFunc"];
+    ids.forEach(id=>{
+        const b = document.getElementById(id);
+        if(!b) return; // sicurezza
+        if(enabled){
+            b.classList.remove("disabled");
+            b.style.pointerEvents = "auto";
+            b.style.opacity = "1";
+        } else {
+            b.classList.add("disabled");
+            b.style.pointerEvents = "none";
+            b.style.opacity = "0.5";
+        }
+    });
+}
 }catch(e){
 console.error(e);
 showInfo("Errore caricamento dati");
