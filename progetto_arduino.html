@@ -356,52 +356,17 @@ const sel = document.getElementById("selectModello");
 /* ============================================================
    APRI FILTRO
 ============================================================ */
-function apriFiltro(sezione) {
-    const btn = document.getElementById("btn" + capitalize(sezione));
-    if (btn.classList.contains("disabled")) return;
-
-    btn.classList.add("activeClick");
-    setTimeout(() => btn.classList.remove("activeClick"), 300);
-
-    const panel = document.getElementById("panel" + capitalize(sezione));
-    panel.innerHTML = "";
-
-    TIPI_SEZIONI[sezione].forEach(tipo => {
-        const info = CHIP_TIPI[tipo];
-        const div = document.createElement("div");
-        div.className = "chip";
-        div.dataset.tipo = tipo;
-        div.style.background = info.colore;
-        div.innerHTML = `
-            <div class="chipTitle">${info.nome}</div>
-            <div class="chipDesc">${info.desc}</div>
-        `;
-        div.onclick = () => div.classList.toggle("active");
-        panel.appendChild(div);
-    });
-
-    const btnApply = document.createElement("button");
-    btnApply.className = "applyFilterBtn";
-    btnApply.textContent = "Applica filtro";
-    btnApply.onclick = () => applicaFiltro(sezione);
-    panel.appendChild(btnApply);
-
-    panel.style.display = "block";
-}
-
-/* ============================================================
-   APPLICA FILTRO
-============================================================ */
 function applicaFiltro(sezione) {
     const panel = document.getElementById("panel" + capitalize(sezione));
     const select = document.getElementById("select" + capitalize(sezione));
 
-    const attivi = [...panel.querySelectorAll(".chip.active")].map(c => c.dataset.tipo);
+    const attivi = [...panel.querySelectorAll(".chip.active")]
+        .map(c => c.dataset.tipo);
 
     select.innerHTML = "";
-
     let trovati = 0;
-    Object.values(window._blocchiArduino).forEach(b => {
+
+    Object.values(window._blocchiArduino || {}).forEach(b => {
         if (attivi.includes(b.tipo)) {
             trovati++;
             const opt = document.createElement("option");
@@ -428,13 +393,11 @@ function capitalize(s) {
 }
 
 /* ============================================================
-   FUNZIONI GLOBALI (OBBLIGATORIE)
+   FUNZIONI GLOBALI MINIME
 ============================================================ */
-window.apriFiltro = apriFiltro;
-window.applicaFiltro = applicaFiltro;
-window.nuovoProgetto = () => alert("Nuovo progetto (da implementare)");
-window.salvaProgetto = () => alert("Salvataggio progetto (da implementare)");
-window.generaFile = () => alert("Generazione file .ino (da implementare)");
+window.nuovoProgetto = () => showInfo("Funzione nuovo progetto in arrivo");
+window.salvaProgetto = () => showInfo("Funzione salvataggio in arrivo");
+window.generaFile = () => showInfo("Funzione generazione file in arrivo");
 
 </script>
 </body>
