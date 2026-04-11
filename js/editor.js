@@ -154,6 +154,9 @@ function generaChip(sezione) {
 
 // genera i chip all’avvio
 ["dich","setup","loop","func"].forEach(generaChip);
+
+// genera i chip all’avvio
+["dich","setup","loop","func"].forEach(generaChip);
 // ============================================================
 //  UTILITY
 // ============================================================
