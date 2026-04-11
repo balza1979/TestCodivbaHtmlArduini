@@ -129,7 +129,31 @@ export function applicaFiltro(sezione) {
 
     panel.style.display = "none";
 }
+// ============================================================
+//  GENERA CHIP PER OGNI SEZIONE
+// ============================================================
+function generaChip(sezione) {
+    const panel = document.getElementById("panel" + capitalize(sezione));
+    panel.innerHTML = "";
 
+    TIPI_SEZIONI[sezione].forEach(tipo => {
+        const info = CHIP_TIPI[tipo];
+        if (!info) return;
+
+        const chip = document.createElement("div");
+        chip.className = "chip";
+        chip.dataset.tipo = tipo;
+        chip.style.background = info.colore;
+        chip.textContent = info.nome;
+
+        chip.onclick = () => chip.classList.toggle("active");
+
+        panel.appendChild(chip);
+    });
+}
+
+// genera i chip all’avvio
+["dich","setup","loop","func"].forEach(generaChip);
 // ============================================================
 //  UTILITY
 // ============================================================
