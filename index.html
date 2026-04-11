@@ -1,62 +1,33 @@
 <!DOCTYPE html>
-<!-- force.   update -->
-<html>
+<html lang="it">
+
 <head>
-<meta charset="UTF-8">
-<title>SELEZIONA LINGUAGGIO</title>
+    <meta charset="UTF-8">
+    <title>Arduino Builder</title>
 
-<style>
-    body {
-        font-family: Arial;
-        margin: 0;
-        padding: 40px;
-        background: #f2f2f2;
-        text-align: center;
-    }
-
-    h1 {
-        font-size: 90px;
-        margin-bottom: 60px;
-    }
-
-    .btn {
-        width: 90%;
-        padding: 60px;
-        margin: 30px auto;
-        font-size: 70px;
-        border-radius: 30px;
-        border: none;
-        color: white;
-        font-weight: bold;
-        display: block;
-    }
-
-    .js { background: #F7DF1E; color: black; }
-    .html { background: #E44D26; }
-    .css { background: #264DE4; }
-    .vba { background: #6A1B9A; }
-    .arduino { background: #00979D; }
-    .excel { background: #1D6F42; }
-</style>
-
+    <!-- SOLO STILE GENERALE -->
+    <link rel="stylesheet" href="css/base.css">
 </head>
+
 <body>
 
-<h1>SCEGLI IL LINGUAGGIO</h1>
+    <h1>Arduino Builder 2.0</h1>
 
-<button class="btn js" onclick="scegli('javascript')">JavaScript</button>
-<button class="btn html" onclick="scegli('html')">HTML</button>
-<button class="btn css" onclick="scegli('css')">CSS</button>
-<button class="btn vba" onclick="scegli('vba')">VBA</button>
-<button class="btn arduino" onclick="scegli('arduino')">Arduino</button>
-<button class="btn excel" onclick="scegli('excel')">Excel</button>
+    <div class="homeContainer">
 
-<script>
-function scegli(lang) {
-    localStorage.setItem("linguaggio", lang);
-    window.location.href = "linguaggio.html"; 
-}
-</script>
+        <button class="homeBtn" onclick="window.location.href='editor.html'">
+            ✏️ Apri Editor
+        </button>
+
+        <button class="homeBtn" onclick="window.location.href='progetti.html'">
+            📁 Progetti Salvati
+        </button>
+
+        <button class="homeBtn" onclick="window.location.href='linguaggio.html'">
+            📘 Guida Linguaggio
+        </button>
+
+    </div>
 
 </body>
 </html>
