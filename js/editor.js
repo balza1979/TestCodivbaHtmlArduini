@@ -184,3 +184,41 @@ window.generaFile = () => showInfo("Funzione generazione file in arrivo");
 window.nuovoProgetto = () => {
     showInfo("Funzione nuovo progetto in arrivo (da ricostruire)");
 };
+// ============================================================
+//  POPUP NUOVO PROGETTO
+// ============================================================
+const popupNew = document.getElementById("popupNewProject");
+const btnNewEmpty = document.getElementById("btnNewEmpty");
+const btnNewBlocks = document.getElementById("btnNewBlocks");
+const btnLoadProject = document.getElementById("btnLoadProject");
+const btnCloseNew = document.getElementById("btnCloseNewProject");
+
+// Mostra popup
+window.nuovoProgetto = () => {
+    popupNew.style.display = "flex";
+};
+
+// Chiudi popup
+btnCloseNew.onclick = () => {
+    popupNew.style.display = "none";
+};
+
+// Nuovo progetto vuoto
+btnNewEmpty.onclick = () => {
+    popupNew.style.display = "none";
+    showInfo("Nuovo progetto vuoto creato");
+    // Qui puoi aggiungere reset campi
+};
+
+// Crea nuovi blocchi
+btnNewBlocks.onclick = () => {
+    popupNew.style.display = "none";
+    showInfo("Funzione creazione nuovi blocchi in arrivo");
+};
+
+// Carica progetto
+btnLoadProject.onclick = () => {
+    popupNew.style.display = "none";
+    showInfo("Funzione caricamento progetto in arrivo");
+};
+
