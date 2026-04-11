@@ -136,7 +136,18 @@ export function applicaFiltro(sezione) {
 function capitalize(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
 }
+// ============================================================
+//  APRI FILTRO (manca nella nuova versione)
+// ============================================================
+window.apriFiltro = function (sezione) {
+    const panel = document.getElementById("panel" + capitalize(sezione));
+    panel.style.display = "flex";
 
+    // attiva/disattiva chip
+    panel.querySelectorAll(".chip").forEach(chip => {
+        chip.onclick = () => chip.classList.toggle("active");
+    });
+};
 // ============================================================
 //  FUNZIONI GLOBALI
 // ============================================================
