@@ -181,3 +181,6 @@ window.apriFiltro = function (sezione) {
 window.nuovoProgetto = () => showInfo("Funzione nuovo progetto in arrivo");
 window.salvaProgetto = () => showInfo("Funzione salvataggio in arrivo");
 window.generaFile = () => showInfo("Funzione generazione file in arrivo");
+window.nuovoProgetto = () => {
+    showInfo("Funzione nuovo progetto in arrivo (da ricostruire)");
+};
