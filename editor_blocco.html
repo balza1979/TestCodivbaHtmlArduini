@@ -1,0 +1,54 @@
+<div id="editorBlocco" class="popupContainer">
+
+    <div class="popupCard">
+
+        <h1 id="titoloEditorBlocco">Nuovo Blocco</h1>
+
+        <!-- Nome -->
+        <label>Nome Blocco</label>
+        <input id="bloccoNome" class="inputBig" type="text">
+
+        <!-- Categoria -->
+        <label>Categoria</label>
+        <select id="bloccoCategoria" class="inputBig">
+            <option value="input">Input</option>
+            <option value="output">Output</option>
+            <option value="logica">Logica</option>
+            <option value="sensori">Sensori</option>
+            <option value="animazione">Animazione</option>
+            <option value="esp32">ESP32</option>
+            <option value="altro">Altro</option>
+        </select>
+
+        <!-- Librerie -->
+        <h2>Librerie richieste</h2>
+        <div id="listaLibrerie"></div>
+        <button id="btnAggiungiLibreria" class="btnAdd">➕ Aggiungi Libreria</button>
+
+        <!-- Variabili -->
+        <h2>Variabili del blocco</h2>
+        <div id="listaVariabili"></div>
+        <button id="btnAggiungiVariabile" class="btnAdd">➕ Aggiungi Variabile</button>
+
+        <!-- Codice -->
+        <h2>Codice: Dichiarazioni</h2>
+        <textarea id="codiceDichiarazioni" class="textareaBig"></textarea>
+
+        <h2>Codice: Setup</h2>
+        <textarea id="codiceSetup" class="textareaBig"></textarea>
+
+        <h2>Codice: Loop</h2>
+        <textarea id="codiceLoop" class="textareaBig"></textarea>
+
+        <h2>Funzioni aggiuntive</h2>
+        <textarea id="codiceFunzioni" class="textareaBig"></textarea>
+
+        <!-- Pulsanti -->
+        <div class="btnRow">
+            <button id="btnSalvaBlocco" class="btnSave">💾 Salva Blocco</button>
+            <button id="btnAnnullaBlocco" class="btnCancel">❌ Annulla</button>
+        </div>
+
+    </div>
+
+</div>
