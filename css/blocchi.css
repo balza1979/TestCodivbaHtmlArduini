@@ -1,0 +1,46 @@
+.block-card {
+  background: #1e1e1e;
+  padding: 18px;
+  margin: 15px;
+  border-radius: 12px;
+  color: #fff;
+}
+
+.block-title {
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+}
+
+/* Pulsanti responsive */
+.block-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 12px;
+  width: 100%;
+  padding-top: 10px;
+}
+
+.block-actions button {
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.btn-edit {
+  background: #2ecc71;
+  color: #fff;
+}
+
+.btn-duplicate {
+  background: #3498db;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #e74c3c;
+  color: #fff;
+}
