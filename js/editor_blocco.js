@@ -1,254 +1,155 @@
+// ============================================================
+//  IMPORT FIREBASE (Realtime Database)
+// ============================================================
+import { 
+    getDatabase, ref, set, get 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// ===============================
-//  EDITOR BLOCCHI - JAVASCRIPT
-// ===============================
+import { app } from "./firebase.js"; // se hai firebase.js separato
 
-// Riferimenti agli elementi HTML
-const nomeInput = document.getElementById("bloccoNome");
-const categoriaInput = document.getElementById("bloccoCategoria");
+const db = getDatabase(app);
 
+// ============================================================
+//  ELEMENTI DOM
+// ============================================================
+const inputNome = document.getElementById("nomeBlocco");
+const inputCategoria = document.getElementById("categoriaBlocco");
 const listaLibrerie = document.getElementById("listaLibrerie");
-const btnAggiungiLibreria = document.getElementById("btnAggiungiLibreria");
-
 const listaVariabili = document.getElementById("listaVariabili");
-const btnAggiungiVariabile = document.getElementById("btnAggiungiVariabile");
 
-const codiceDichiarazioni = document.getElementById("codiceDichiarazioni");
+const codiceDich = document.getElementById("codiceDich");
 const codiceSetup = document.getElementById("codiceSetup");
 const codiceLoop = document.getElementById("codiceLoop");
-const codiceFunzioni = document.getElementById("codiceFunzioni");
 
-const btnSalva = document.getElementById("btnSalvaBlocco");
-const btnAnnulla = document.getElementById("btnAnnullaBlocco");
+const btnSalva = document.getElementById("btnSalva");
+const btnAnnulla = document.getElementById("btnAnnulla");
 
+// ============================================================
+//  OTTIENI PARAMETRI URL
+// ============================================================
+const url = new URL(window.location.href);
+const id = url.searchParams.get("id");
+const isNew = url.searchParams.get("new") === "1";
 
-// ===============================
-//  TIPI DI VARIABILI DISPONIBILI
-// ===============================
+// ============================================================
+//  CARICA BLOCCO SE ESISTE
+// ============================================================
+if (!isNew && id) {
+    caricaBlocco(id);
+}
 
-const tipiVariabili = [
-    "string",
-    "numero",
-    "pin",
-    "pin_pwm",
-    "pin_analog",
-    "pulsante",
-    "uscita",
-    "servo",
-    "ultrasuoni",
-    "stepper",
-    "strip",
-    "colore",
-    "boolean",
-    "libreria",
-    "esp32_pin",
-    "esp32_wifi_mode",
-    "esp32_bt_device",
-    "html_page"
-];
+async function caricaBlocco(id) {
+    const snapshot = await get(ref(db, "blocchi/" + id));
 
+    if (!snapshot.exists()) {
+        alert("Blocco non trovato");
+        return;
+    }
 
-// ===============================
-//  FUNZIONE: CREA UNA RIGA LIBRERIA
-// ===============================
+    const b = snapshot.val();
 
-function creaRigaLibreria(valore = "") {
+    inputNome.value = b.nome;
+    inputCategoria.value = b.categoria;
+
+    codiceDich.value = b.codiceDich || "";
+    codiceSetup.value = b.codiceSetup || "";
+    codiceLoop.value = b.codiceLoop || "";
+
+    // Librerie
+    listaLibrerie.innerHTML = "";
+    (b.librerie || []).forEach(lib => aggiungiLibreria(lib));
+
+    // Variabili
+    listaVariabili.innerHTML = "";
+    (b.variabili || []).forEach(v => aggiungiVariabile(v.nome, v.tipo));
+}
+
+// ============================================================
+//  AGGIUNGI LIBRERIA
+// ============================================================
+document.getElementById("btnAddLib").onclick = () => aggiungiLibreria("");
+
+function aggiungiLibreria(valore) {
     const div = document.createElement("div");
     div.className = "rigaLibreria";
 
-    const input = document.createElement("input");
-    input.type = "text";
-    input.className = "inputBig";
-    input.value = valore;
+    div.innerHTML = `
+        <input class="inputVar" value="${valore}">
+        <button class="btnDelete">🗑</button>
+    `;
 
-    const btnX = document.createElement("button");
-    btnX.className = "btnDelete";
-    btnX.textContent = "X";
-    btnX.onclick = () => div.remove();
-
-    div.appendChild(input);
-    div.appendChild(btnX);
-
+    div.querySelector(".btnDelete").onclick = () => div.remove();
     listaLibrerie.appendChild(div);
 }
 
+// ============================================================
+//  AGGIUNGI VARIABILE
+// ============================================================
+document.getElementById("btnAddVar").onclick = () => aggiungiVariabile("", "int");
 
-// ===============================
-//  FUNZIONE: CREA UNA RIGA VARIABILE
-// ===============================
-
-function creaRigaVariabile(nome = "", tipo = "string") {
+function aggiungiVariabile(nome, tipo) {
     const div = document.createElement("div");
     div.className = "rigaVariabile";
 
-    // Nome variabile
-    const inputNome = document.createElement("input");
-    inputNome.type = "text";
-    inputNome.className = "inputVar";
-    inputNome.placeholder = "nomeVariabile";
-    inputNome.value = nome;
+    div.innerHTML = `
+        <input class="inputVar" placeholder="Nome variabile" value="${nome}">
+        <select class="selectVar">
+            <option value="int" ${tipo === "int" ? "selected" : ""}>int</option>
+            <option value="float" ${tipo === "float" ? "selected" : ""}>float</option>
+            <option value="bool" ${tipo === "bool" ? "selected" : ""}>bool</option>
+            <option value="String" ${tipo === "String" ? "selected" : ""}>String</option>
+        </select>
+        <button class="btnDelete">🗑</button>
+    `;
 
-    // Dropdown tipo variabile
-    const selectTipo = document.createElement("select");
-    selectTipo.className = "selectVar";
-
-    tipiVariabili.forEach(t => {
-        const opt = document.createElement("option");
-        opt.value = t;
-        opt.textContent = t;
-        if (t === tipo) opt.selected = true;
-        selectTipo.appendChild(opt);
-    });
-
-    // Bottone elimina
-    const btnX = document.createElement("button");
-    btnX.className = "btnDelete";
-    btnX.textContent = "X";
-    btnX.onclick = () => div.remove();
-
-    div.appendChild(inputNome);
-    div.appendChild(selectTipo);
-    div.appendChild(btnX);
-
+    div.querySelector(".btnDelete").onclick = () => div.remove();
     listaVariabili.appendChild(div);
 }
 
-
-// ===============================
-//  AGGIUNTA LIBRERIA
-// ===============================
-
-btnAggiungiLibreria.onclick = () => {
-    creaRigaLibreria("");
-};
-
-
-// ===============================
-//  AGGIUNTA VARIABILE
-// ===============================
-
-btnAggiungiVariabile.onclick = () => {
-    creaRigaVariabile("", "string");
-};
-
-
-// ===============================
-//  SALVATAGGIO BLOCCO
-// ===============================
-
+// ============================================================
+//  SALVA BLOCCO
+// ============================================================
 btnSalva.onclick = async () => {
-
-    const nome = nomeInput.value.trim();
-    if (!nome) {
+    const nome = inputNome.value.trim();
+    if (nome === "") {
         alert("Inserisci un nome per il blocco");
         return;
     }
 
-    const categoria = categoriaInput.value;
+    const id = nome.replace(/\s+/g, "_");
 
-    // --- LIBRERIE ---
-    const librerie = [];
-    listaLibrerie.querySelectorAll(".rigaLibreria input").forEach(input => {
-        if (input.value.trim() !== "") librerie.push(input.value.trim());
+    const blocco = {
+        nome: nome,
+        categoria: inputCategoria.value,
+        codiceDich: codiceDich.value,
+        codiceSetup: codiceSetup.value,
+        codiceLoop: codiceLoop.value,
+        librerie: [],
+        variabili: []
+    };
+
+    // Librerie
+    listaLibrerie.querySelectorAll(".rigaLibreria").forEach(div => {
+        const val = div.querySelector("input").value.trim();
+        if (val !== "") blocco.librerie.push(val);
     });
 
-    // --- VARIABILI ---
-    const variabili = [];
+    // Variabili
     listaVariabili.querySelectorAll(".rigaVariabile").forEach(div => {
         const nomeVar = div.querySelector("input").value.trim();
         const tipoVar = div.querySelector("select").value;
-
-        if (nomeVar !== "") {
-            variabili.push({
-                nome: nomeVar,
-                tipo: tipoVar
-            });
-        }
+        if (nomeVar !== "") blocco.variabili.push({ nome: nomeVar, tipo: tipoVar });
     });
 
-    // --- CODICE ---
-    const codice = {
-        dichiarazioni: codiceDichiarazioni.value,
-        setup: codiceSetup.value,
-        loop: codiceLoop.value,
-        funzioni: codiceFunzioni.value
-    };
+    await set(ref(db, "blocchi/" + id), blocco);
 
-    // --- JSON FINALE ---
-    const blocco = {
-        nome,
-        categoria,
-        librerie,
-        variabili,
-        codice
-    };
-
-    // Salvataggio su Firebase
-    try {
-        await salvaBloccoFirebase(blocco);
-        alert("Blocco salvato con successo!");
-        window.location.href = "blocchi.html";
-    } catch (e) {
-        console.error(e);
-        alert("Errore durante il salvataggio");
-    }
-};
-
-
-// ===============================
-//  ANNULLA
-// ===============================
-
-btnAnnulla.onclick = () => {
+    alert("Blocco salvato!");
     window.location.href = "blocchi.html";
 };
 
-
-// ===============================
-//  CARICAMENTO BLOCCO ESISTENTE
-// ===============================
-
-async function caricaBlocco() {
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-
-    if (!id) return; // nuovo blocco
-
-    const blocco = await caricaBloccoFirebase(id);
-    if (!blocco) return;
-
-    document.getElementById("titoloEditorBlocco").textContent = "Modifica Blocco";
-
-    nomeInput.value = blocco.nome;
-    categoriaInput.value = blocco.categoria;
-
-    // Librerie
-    blocco.librerie.forEach(lib => creaRigaLibreria(lib));
-
-    // Variabili
-    blocco.variabili.forEach(v => creaRigaVariabile(v.nome, v.tipo));
-
-    // Codice
-    codiceDichiarazioni.value = blocco.codice.dichiarazioni;
-    codiceSetup.value = blocco.codice.setup;
-    codiceLoop.value = blocco.codice.loop;
-    codiceFunzioni.value = blocco.codice.funzioni;
-}
-
-caricaBlocco();
-
-
-// ===============================
-//  FUNZIONI FIREBASE (DA IMPLEMENTARE)
-// ===============================
-
-async function salvaBloccoFirebase(blocco) {
-    // Qui inserirai il codice Firebase reale
-    console.log("SALVO BLOCCO:", blocco);
-}
-
-async function caricaBloccoFirebase(id) {
-    // Qui inserirai il codice Firebase reale
-    console.log("CARICO BLOCCO:", id);
-    return null;
-}
+// ============================================================
+//  ANNULLA
+// ============================================================
+btnAnnulla.onclick = () => {
+    window.location.href = "blocchi.html";
+};
