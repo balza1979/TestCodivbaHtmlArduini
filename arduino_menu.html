@@ -3,16 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu Arduino</title>
+    <title>Arduino – Menu</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
-    <h1>Menu Arduino</h1>
+    <h1 class="title">Arduino</h1>
 
     <div class="menu-container">
-        <button onclick="location.href='blocchi.html'">Crea / Modifica Blocchi</button>
-        <button onclick="location.href='home.html'">Torna alla Home</button>
+
+        <button class="menu-btn blue" onclick="location.href='blocchi.html'">
+            <span class="icon">🧩</span>
+            <span class="label">Blocchi</span>
+        </button>
+
+        <button class="menu-btn green" onclick="location.href='progetto_arduino.html'">
+            <span class="icon">📁</span>
+            <span class="label">Progetti</span>
+        </button>
+
+        <button class="menu-btn orange" onclick="location.href='home.html'">
+            <span class="icon">🏠</span>
+            <span class="label">Home</span>
+        </button>
+
     </div>
 
 </body>
