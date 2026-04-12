@@ -1,0 +1,213 @@
+/* ================================
+   STILE GENERALE
+================================ */
+
+body {
+    background: #1b1b1b;
+    color: #e6e6e6;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3 {
+    color: #ffffff;
+    margin-top: 0;
+}
+
+/* ================================
+   CONTENITORI PRINCIPALI
+================================ */
+
+.pageContainer {
+    width: 90%;
+    max-width: 1000px;
+    margin: auto;
+    padding-top: 40px;
+}
+
+.popupContainer {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+}
+
+.popupCard {
+    background: #242424;
+    width: 90%;
+    max-width: 900px;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+/* ================================
+   INPUT E SELECT
+================================ */
+
+.inputBig {
+    width: 100%;
+    padding: 14px;
+    margin: 10px 0 20px 0;
+    border-radius: 8px;
+    border: none;
+    background: #333;
+    color: #fff;
+    font-size: 18px;
+}
+
+.inputVar {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: #333;
+    color: #fff;
+    font-size: 16px;
+}
+
+.selectVar {
+    width: 180px;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: #444;
+    color: #fff;
+    font-size: 16px;
+}
+
+/* ================================
+   TEXTAREA
+================================ */
+
+.textareaBig {
+    width: 100%;
+    height: 140px;
+    padding: 14px;
+    margin: 10px 0 20px 0;
+    border-radius: 8px;
+    border: none;
+    background: #333;
+    color: #fff;
+    font-size: 16px;
+    resize: vertical;
+}
+
+/* ================================
+   RIGHE VARIABILI E LIBRERIE
+================================ */
+
+.rigaVariabile,
+.rigaLibreria {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+/* ================================
+   BOTTONI
+================================ */
+
+.btnAdd {
+    width: 100%;
+    padding: 14px;
+    background: #2d7dff;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 18px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.btnAdd:hover {
+    background: #1f5fcc;
+}
+
+.btnDelete {
+    background: #aa0000;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btnDelete:hover {
+    background: #cc0000;
+}
+
+.btnRow {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.btnSave {
+    background: #28a745;
+    padding: 16px 24px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.btnSave:hover {
+    background: #1f8a39;
+}
+
+.btnCancel {
+    background: #555;
+    padding: 16px 24px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.btnCancel:hover {
+    background: #666;
+}
+
+/* ================================
+   LISTA BLOCCHI
+================================ */
+
+.listaBlocchi {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.bloccoCard {
+    background: #242424;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.bloccoCard h3 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.bloccoCard .categoria {
+    color: #aaa;
+    margin-bottom: 20px;
+}
+
+/* ================================
+   TOOLBAR
+================================ */
+
+.toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
