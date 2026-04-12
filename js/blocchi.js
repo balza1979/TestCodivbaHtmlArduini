@@ -1,21 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
-    alert("blocchi.js è attivo");
 
     document.querySelectorAll(".btn-edit").forEach(btn => {
         btn.addEventListener("click", () => {
-            console.log("Modifica blocco");
+            alert("Modifica blocco");
         });
     });
 
     document.querySelectorAll(".btn-duplicate").forEach(btn => {
         btn.addEventListener("click", () => {
-            console.log("Duplica blocco");
+            alert("Duplica blocco");
         });
     });
 
     document.querySelectorAll(".btn-delete").forEach(btn => {
         btn.addEventListener("click", () => {
-            console.log("Elimina blocco");
+            alert("Elimina blocco");
         });
     });
 
