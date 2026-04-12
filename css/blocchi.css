@@ -11,7 +11,6 @@
   margin-bottom: 12px;
 }
 
-/* Pulsanti responsive */
 .block-actions {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
@@ -27,20 +26,8 @@
   border: none;
   cursor: pointer;
   width: 100%;
-  box-sizing: border-box;
 }
 
-.btn-edit {
-  background: #2ecc71;
-  color: #fff;
-}
-
-.btn-duplicate {
-  background: #3498db;
-  color: #fff;
-}
-
-.btn-delete {
-  background: #e74c3c;
-  color: #fff;
-}
+.btn-edit { background: #2ecc71; color: #fff; }
+.btn-duplicate { background: #3498db; color: #fff; }
+.btn-delete { background: #e74c3c; color: #fff; }
