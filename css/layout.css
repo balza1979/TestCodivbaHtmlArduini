@@ -1,11 +1,7 @@
-body {
-  margin: 0;
-  background: #121212;
-  font-family: Arial, sans-serif;
+.block-card {
+  background: #1e1e1e;
+  padding: 18px;
+  margin: 15px;
+  border-radius: 12px;
   color: #fff;
-}
-
-h1 {
-  text-align: center;
-  padding: 20px 0;
 }
