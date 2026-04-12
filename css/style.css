@@ -59,3 +59,29 @@ h1 {
 .menu-btn:hover {
   background: #333;
 }
+/* --- Ripristino stile Home --- */
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.menu-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #1e1e1e;
+  padding: 18px;
+  border-radius: 12px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: 0.2s ease;
+}
+
+.menu-btn:hover {
+  background: #333;
+}
