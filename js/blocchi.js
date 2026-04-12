@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("blocchi.js è attivo");
+    alert("blocchi.js è attivo");
 
     document.querySelectorAll(".btn-edit").forEach(btn => {
         btn.addEventListener("click", () => {
