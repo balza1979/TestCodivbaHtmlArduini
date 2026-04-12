@@ -1,0 +1,100 @@
+// =====================================
+//  CONFIGURAZIONE FIREBASE
+// =====================================
+
+const firebaseConfig = {
+    apiKey: "INSERISCI_API_KEY",
+    authDomain: "INSERISCI_DOMINIO",
+    projectId: "INSERISCI_PROJECT_ID",
+    storageBucket: "INSERISCI_BUCKET",
+    messagingSenderId: "INSERISCI_SENDER_ID",
+    appId: "INSERISCI_APP_ID"
+};
+
+// Inizializza Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+
+// =====================================
+//  SALVA BLOCCO
+// =====================================
+
+async function salvaBloccoFirebase(blocco) {
+    const id = blocco.nome.replace(/\s+/g, "_"); // ID pulito
+
+    await db.collection("blocchi").doc(id).set(blocco);
+    console.log("Blocco salvato:", id);
+}
+
+
+// =====================================
+//  CARICA BLOCCO
+// =====================================
+
+async function caricaBloccoFirebase(id) {
+    const doc = await db.collection("blocchi").doc(id).get();
+    if (!doc.exists) return null;
+    return doc.data();
+}
+
+
+// =====================================
+//  CARICA TUTTI I BLOCCHI
+// =====================================
+
+async function caricaTuttiBlocchi() {
+    const snap = await db.collection("blocchi").get();
+    const lista = [];
+    snap.forEach(doc => lista.push(doc.data()));
+    return lista;
+}
+
+
+// =====================================
+//  SALVA PROGETTO
+// =====================================
+
+async function salvaProgettoFirebase(id, progetto) {
+    await db.collection("progetti").doc(id).set(progetto);
+    console.log("Progetto salvato:", id);
+}
+
+
+// =====================================
+//  CARICA PROGETTO
+// =====================================
+
+async function caricaProgettoFirebase(id) {
+    const doc = await db.collection("progetti").doc(id).get();
+    if (!doc.exists) return null;
+    return doc.data();
+}
+
+
+// =====================================
+//  SALVA VERSIONE PROGETTO (MULTI-DISPOSITIVO)
+// =====================================
+
+async function salvaVersioneProgetto(idProgetto, dispositivo, versione) {
+    await db.collection("progetti")
+        .doc(idProgetto)
+        .update({
+            [`versioni.${dispositivo}`]: versione
+        });
+
+    console.log("Versione salvata:", dispositivo);
+}
+
+
+// =====================================
+//  CARICA VERSIONE PROGETTO
+// =====================================
+
+async function caricaVersioneProgetto(idProgetto, dispositivo) {
+    const doc = await db.collection("progetti").doc(idProgetto).get();
+    if (!doc.exists) return null;
+
+    const data = doc.data();
+    return data.versioni?.[dispositivo] || null;
+}
