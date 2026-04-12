@@ -1,9 +1,9 @@
-
 // ============================================================
-//  IMPORT FIREBASE
+//  IMPORT FIREBASE (Realtime Database)
 // ============================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, set, get, child, remove } 
+    from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 // ============================================================
 //  CONFIGURAZIONE FIREBASE
@@ -24,5 +24,5 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const db = getDatabase(app);
 
-// Esporto anche ref, set, get, child così puoi usarli in editor.js
-export { ref, set, get, child };
+// Esporto tutto per editor_blocco.js e blocchi.js
+export { ref, set, get, child, remove };
