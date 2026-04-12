@@ -1,54 +1,73 @@
-<div id="editorBlocco" class="popupContainer">
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor Blocco</title>
 
-    <div class="popupCard">
+    <!-- Collegamento al tuo CSS principale -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
 
-        <h1 id="titoloEditorBlocco">Nuovo Blocco</h1>
+<body>
 
-        <!-- Nome -->
-        <label>Nome Blocco</label>
-        <input id="bloccoNome" class="inputBig" type="text">
+    <div id="editorBlocco" class="popupContainer">
 
-        <!-- Categoria -->
-        <label>Categoria</label>
-        <select id="bloccoCategoria" class="inputBig">
-            <option value="input">Input</option>
-            <option value="output">Output</option>
-            <option value="logica">Logica</option>
-            <option value="sensori">Sensori</option>
-            <option value="animazione">Animazione</option>
-            <option value="esp32">ESP32</option>
-            <option value="altro">Altro</option>
-        </select>
+        <div class="popupCard">
 
-        <!-- Librerie -->
-        <h2>Librerie richieste</h2>
-        <div id="listaLibrerie"></div>
-        <button id="btnAggiungiLibreria" class="btnAdd">➕ Aggiungi Libreria</button>
+            <h1 id="titoloEditorBlocco">Nuovo Blocco</h1>
 
-        <!-- Variabili -->
-        <h2>Variabili del blocco</h2>
-        <div id="listaVariabili"></div>
-        <button id="btnAggiungiVariabile" class="btnAdd">➕ Aggiungi Variabile</button>
+            <!-- Nome -->
+            <label>Nome Blocco</label>
+            <input id="bloccoNome" class="inputBig" type="text">
 
-        <!-- Codice -->
-        <h2>Codice: Dichiarazioni</h2>
-        <textarea id="codiceDichiarazioni" class="textareaBig"></textarea>
+            <!-- Categoria -->
+            <label>Categoria</label>
+            <select id="bloccoCategoria" class="inputBig">
+                <option value="input">Input</option>
+                <option value="output">Output</option>
+                <option value="logica">Logica</option>
+                <option value="sensori">Sensori</option>
+                <option value="animazione">Animazione</option>
+                <option value="esp32">ESP32</option>
+                <option value="altro">Altro</option>
+            </select>
 
-        <h2>Codice: Setup</h2>
-        <textarea id="codiceSetup" class="textareaBig"></textarea>
+            <!-- Librerie -->
+            <h2>Librerie richieste</h2>
+            <div id="listaLibrerie"></div>
+            <button id="btnAggiungiLibreria" class="btnAdd">➕ Aggiungi Libreria</button>
 
-        <h2>Codice: Loop</h2>
-        <textarea id="codiceLoop" class="textareaBig"></textarea>
+            <!-- Variabili -->
+            <h2>Variabili del blocco</h2>
+            <div id="listaVariabili"></div>
+            <button id="btnAggiungiVariabile" class="btnAdd">➕ Aggiungi Variabile</button>
 
-        <h2>Funzioni aggiuntive</h2>
-        <textarea id="codiceFunzioni" class="textareaBig"></textarea>
+            <!-- Codice -->
+            <h2>Codice: Dichiarazioni</h2>
+            <textarea id="codiceDichiarazioni" class="textareaBig"></textarea>
 
-        <!-- Pulsanti -->
-        <div class="btnRow">
-            <button id="btnSalvaBlocco" class="btnSave">💾 Salva Blocco</button>
-            <button id="btnAnnullaBlocco" class="btnCancel">❌ Annulla</button>
+            <h2>Codice: Setup</h2>
+            <textarea id="codiceSetup" class="textareaBig"></textarea>
+
+            <h2>Codice: Loop</h2>
+            <textarea id="codiceLoop" class="textareaBig"></textarea>
+
+            <h2>Funzioni aggiuntive</h2>
+            <textarea id="codiceFunzioni" class="textareaBig"></textarea>
+
+            <!-- Pulsanti -->
+            <div class="btnRow">
+                <button id="btnSalvaBlocco" class="btnSave">💾 Salva Blocco</button>
+                <button id="btnAnnullaBlocco" class="btnCancel">❌ Annulla</button>
+            </div>
+
         </div>
 
     </div>
 
-</div>
+    <!-- Collegamento al JS dedicato -->
+    <script src="js/editor_blocco.js"></script>
+
+</body>
+</html>
