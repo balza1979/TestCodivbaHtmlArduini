@@ -1,19 +1,50 @@
-// ===============================
-//  BLOCCO: CARICAMENTO LISTA
-// ===============================
+// ============================================================
+//  IMPORT FIREBASE (Realtime Database)
+// ============================================================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { 
+    getDatabase, ref, set, get, child, remove 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
+// ============================================================
+//  CONFIGURAZIONE FIREBASE
+// ============================================================
+const firebaseConfig = {
+    apiKey: "AIzaSyB1_lem0tKd5SQeuD7xs8Dj3Ey77MUUhDY",
+    authDomain: "programmazione-4d38e.firebaseapp.com",
+    databaseURL: "https://programmazione-4d38e-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "programmazione-4d38e",
+    storageBucket: "programmazione-4d38e.appspot.com",
+    messagingSenderId: "390860890072",
+    appId: "1:390860890072:web:5199a3f3c80f5b95a5dcad"
+};
+
+// ============================================================
+//  INIZIALIZZAZIONE
+// ============================================================
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// ============================================================
+//  ELEMENTI DOM
+// ============================================================
 const listaBlocchi = document.getElementById("listaBlocchi");
 const searchInput = document.getElementById("searchInput");
 const filtroCategoria = document.getElementById("filtroCategoria");
 const btnNuovoBlocco = document.getElementById("btnNuovoBlocco");
 
-let blocchi = []; // lista completa
-let blocchiFiltrati = []; // lista filtrata
+let blocchi = [];
+let blocchiFiltrati = [];
 
-
-// ===============================
-//  CARICA TUTTI I BLOCCHI DA FIREBASE
-// ===============================
+// ============================================================
+//  CARICA TUTTI I BLOCCHI
+// ============================================================
+async function caricaTuttiBlocchi() {
+    const snapshot = await get(ref(db, "blocchi"));
+    if (!snapshot.exists()) return [];
+    const data = snapshot.val();
+    return Object.values(data);
+}
 
 async function caricaBlocchi() {
     blocchi = await caricaTuttiBlocchi();
@@ -23,11 +54,9 @@ async function caricaBlocchi() {
 
 caricaBlocchi();
 
-
-// ===============================
-//  RENDER LISTA BLOCCHI
-// ===============================
-
+// ============================================================
+//  RENDER LISTA
+// ============================================================
 function renderLista() {
     listaBlocchi.innerHTML = "";
 
@@ -55,29 +84,9 @@ function renderLista() {
     });
 }
 
-
-// ===============================
-//  FILTRO CATEGORIA
-// ===============================
-
-filtroCategoria.onchange = () => {
-    filtra();
-};
-
-
-// ===============================
-//  RICERCA
-// ===============================
-
-searchInput.oninput = () => {
-    filtra();
-};
-
-
-// ===============================
-//  FUNZIONE FILTRO COMPLETO
-// ===============================
-
+// ============================================================
+//  FILTRO + RICERCA
+// ============================================================
 function filtra() {
     const testo = searchInput.value.toLowerCase();
     const cat = filtroCategoria.value;
@@ -91,30 +100,27 @@ function filtra() {
     renderLista();
 }
 
+searchInput.oninput = filtra;
+filtroCategoria.onchange = filtra;
 
-// ===============================
+// ============================================================
 //  NUOVO BLOCCO
-// ===============================
-
+// ============================================================
 btnNuovoBlocco.onclick = () => {
     window.location.href = "editor_blocco.html?new=1";
 };
 
-
-// ===============================
+// ============================================================
 //  MODIFICA BLOCCO
-// ===============================
-
+// ============================================================
 function modificaBlocco(nome) {
     const id = nome.replace(/\s+/g, "_");
     window.location.href = `editor_blocco.html?id=${id}`;
 }
 
-
-// ===============================
+// ============================================================
 //  DUPLICA BLOCCO
-// ===============================
-
+// ============================================================
 async function duplicaBlocco(nome) {
     const id = nome.replace(/\s+/g, "_");
     const blocco = await caricaBloccoFirebase(id);
@@ -130,18 +136,29 @@ async function duplicaBlocco(nome) {
     caricaBlocchi();
 }
 
-
-// ===============================
-//  ELIMINA BLOCCO
-// ===============================
-
+// ============================================================
+//  ELIMINA BLOCCO (Realtime Database CORRETTO)
+// ============================================================
 async function eliminaBlocco(nome) {
     if (!confirm("Vuoi davvero eliminare questo blocco?")) return;
 
     const id = nome.replace(/\s+/g, "_");
 
-    await db.collection("blocchi").doc(id).delete();
+    await remove(ref(db, "blocchi/" + id));
 
     alert("Blocco eliminato!");
     caricaBlocchi();
+}
+
+// ============================================================
+//  FUNZIONI FIREBASE
+// ============================================================
+async function salvaBloccoFirebase(blocco) {
+    const id = blocco.nome.replace(/\s+/g, "_");
+    await set(ref(db, "blocchi/" + id), blocco);
+}
+
+async function caricaBloccoFirebase(id) {
+    const snapshot = await get(ref(db, "blocchi/" + id));
+    return snapshot.exists() ? snapshot.val() : null;
 }
