@@ -1,44 +1,56 @@
 /* 
     style.css : cssA - Stile generale
-    Descrizione: stile base per pulsanti, layout e colori del sito. Usato da tutte le pagine.
+    Descrizione: stile identico alla pagina originale con pulsanti colorati e icone.
 */
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
 body {
-  background: #121212;
-  color: #fff;
-  font-family: Arial, sans-serif;
-  padding: 20px;
+    background: #ffffff;
+    padding: 20px;
+    text-align: center;
 }
 
 h1 {
-  text-align: center;
-  margin-bottom: 25px;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+    color: #222;
 }
 
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 15px;
+.btn-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 90%;
+    max-width: 400px;
+    margin: 0 auto;
 }
 
-.menu-btn {
-  display: block;
-  background: #1e1e1e;
-  padding: 18px;
-  text-align: center;
-  border-radius: 10px;
-  color: #fff;
-  text-decoration: none;
-  font-size: 1.1rem;
-  transition: 0.2s;
+.btn {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-radius: 10px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: bold;
 }
 
-.menu-btn:hover {
-  background: #333;
+.icon {
+    font-size: 1.6rem;
+    margin-right: 12px;
 }
+
+/* COLORI IDENTICI ALL’ORIGINALE */
+.arduino { background: #007bff; }
+.html    { background: #28a745; }
+.css     { background: #fd7e14; }
+.js      { background: #dc3545; }
+.excel   { background: #20c997; }
+.vba     { background: #6f42c1; }
