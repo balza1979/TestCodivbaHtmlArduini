@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editor Blocco</title>
 
-    <!-- Collegamento al tuo CSS principale -->
+    <!-- Stile principale -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-    <div id="editorBlocco" class="popupContainer">
+    <div class="popupContainer">
 
         <div class="popupCard">
 
@@ -19,11 +19,11 @@
 
             <!-- Nome -->
             <label>Nome Blocco</label>
-            <input id="bloccoNome" class="inputBig" type="text">
+            <input id="nomeBlocco" class="inputBig" type="text">
 
             <!-- Categoria -->
             <label>Categoria</label>
-            <select id="bloccoCategoria" class="inputBig">
+            <select id="categoriaBlocco" class="inputBig">
                 <option value="input">Input</option>
                 <option value="output">Output</option>
                 <option value="logica">Logica</option>
@@ -36,16 +36,16 @@
             <!-- Librerie -->
             <h2>Librerie richieste</h2>
             <div id="listaLibrerie"></div>
-            <button id="btnAggiungiLibreria" class="btnAdd">➕ Aggiungi Libreria</button>
+            <button id="btnAddLib" class="btnAdd">➕ Aggiungi Libreria</button>
 
             <!-- Variabili -->
             <h2>Variabili del blocco</h2>
             <div id="listaVariabili"></div>
-            <button id="btnAggiungiVariabile" class="btnAdd">➕ Aggiungi Variabile</button>
+            <button id="btnAddVar" class="btnAdd">➕ Aggiungi Variabile</button>
 
             <!-- Codice -->
             <h2>Codice: Dichiarazioni</h2>
-            <textarea id="codiceDichiarazioni" class="textareaBig"></textarea>
+            <textarea id="codiceDich" class="textareaBig"></textarea>
 
             <h2>Codice: Setup</h2>
             <textarea id="codiceSetup" class="textareaBig"></textarea>
@@ -58,19 +58,17 @@
 
             <!-- Pulsanti -->
             <div class="btnRow">
-                <button id="btnSalvaBlocco" class="btnSave">💾 Salva Blocco</button>
-                <button id="btnAnnullaBlocco" class="btnCancel">❌ Annulla</button>
+                <button id="btnSalva" class="btnSave">💾 Salva Blocco</button>
+                <button id="btnAnnulla" class="btnCancel">❌ Annulla</button>
             </div>
 
         </div>
 
     </div>
 
-    <!-- Collegamento al JS dedicato -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script src="js/firebase.js"></script>
-    <script src="js/editor_blocco.js"></script>
+    <!-- Firebase + Editor (MODULI ES6 CORRETTI) -->
+    <script type="module" src="js/firebase.js"></script>
+    <script type="module" src="js/editor_blocco.js"></script>
 
 </body>
 </html>
