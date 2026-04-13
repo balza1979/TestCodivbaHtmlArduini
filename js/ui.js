@@ -1,59 +1,46 @@
 /* 
     js/ui.js : core - Gestione interfaccia Arduino
     Percorso completo: /js/ui.js
-    Data: 13/04/2026 - Ore 00:19
-    Descrizione:
-    File dedicato alla gestione dell'interfaccia utente.
-    Qui NON c'è logica di progetto (che sta in /js/logic.js).
-    Qui NON ci sono dati dei blocchi (che stanno in /js/blocks.js).
-
-    Questo file si occupa solo di:
-    - mostrare i blocchi a schermo
-    - aggiornare la lista dei blocchi
-    - gestire i click dell'utente
-    - comunicare con logic.js
-    - aggiornare la pagina progetto
-
-    Versione iniziale: solo struttura, nessuna funzione implementata.
+    Data: 13/04/2026 - Ore 07:12
+    Sezione: Gestione pulsanti categoria (multi-selezione)
 */
 
+// Stato categorie selezionate
+let categorieSelezionate = new Set();
 
-// =========================
-// 1. RENDER LISTA BLOCCHI
-// =========================
-function renderBlocks(lista) {
-    // Verrà implementato dopo
+// Funzione per inizializzare i pulsanti categoria
+function setupCategoryButtons() {
+    const buttons = document.querySelectorAll(".categoria-btn");
+
+    buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+
+            const categoria = btn.dataset.categoria;
+
+            // Toggle selezione
+            if (categorieSelezionate.has(categoria)) {
+                categorieSelezionate.delete(categoria);
+                btn.classList.remove("attiva");
+            } else {
+                categorieSelezionate.add(categoria);
+                btn.classList.add("attiva");
+            }
+        });
+    });
 }
 
-
-// =========================
-// 2. EVENTI UI (click, input, ecc.)
-// =========================
-function setupUIEvents() {
-    // Verrà implementato dopo
+// Funzione per ottenere le categorie attive
+function getCategorieAttive() {
+    return Array.from(categorieSelezionate);
 }
 
-
-// =========================
-// 3. AGGIORNAMENTO DINAMICO UI
-// =========================
-function updateUI() {
-    // Verrà implementato dopo
-}
-
-
-// =========================
-// 4. ESPORTAZIONE FUNZIONI
-// =========================
 export {
-    renderBlocks,
-    setupUIEvents,
-    updateUI
+    setupCategoryButtons,
+    getCategorieAttive
 };
 
-
 /* 
-    Fine js/ui.js : core - Gestione interfaccia Arduino
+    Fine js/ui.js : Gestione pulsanti categoria
     Percorso completo: /js/ui.js
-    Data: 13/04/2026 - Ore 00:19
+    Data: 13/04/2026 - Ore 07:12
 */
